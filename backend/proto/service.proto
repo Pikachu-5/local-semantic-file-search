@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package swiftsearch;
+
+option csharp_namespace = "SwiftSearch.Core.Protos";
+
+service SearchEngine {
+  // Executes a hybrid semantic and lexical search query
+  rpc SemanticSearch (SearchRequest) returns (SearchResponse);
+  
+  // Triggers background indexing of a specific directory
+  rpc IndexTargetFolder (IndexRequest) returns (IndexResponse);
+  
+  // Retrieves running status, total file counts, and vector counts
+  rpc GetSystemStatus (Empty) returns (StatusResponse);
+  
+  // Updates system settings dynamically (e.g. active model, exclusions)
+  rpc UpdateSettings (SettingsRequest) returns (SettingsResponse);
+}
+
+message SearchRequest {
+  string query = 1;
+  int32 top_k = 2;
+  repeated string filters = 3; // Optional metadata filters
+}
+
+message SearchResponse {
+  repeated SearchResult results = 1;
+  float execution_time_ms = 2;
+}
+
+message SearchResult {
+  string file_path = 1;
+  string file_name = 2;
+  string chunk_text = 3;
+  float relevance_score = 4;
+}
+
+message IndexRequest {
+  string folder_path = 1;
+  bool auto_watch = 2;
+}
+
+message IndexResponse {
+  bool success = 1;
+  int32 files_processed = 2;
+  int32 chunks_created = 3;
+  string error_message = 4;
+}
+
+message SettingsRequest {
+  string active_model = 1;             // BGE-Small-EN-v1.5 or Nomic-Embed-Text-v1.5
+  repeated string excluded_dirs = 2;       // Folder names to exclude (e.g., node_modules, .git)
+  repeated string included_extensions = 3; // File extensions to parse (e.g., .pdf, .md, .txt, .py)
+}
+
+message SettingsResponse {
+  bool success = 1;
+  string error_message = 2;
+}
+
+message Empty {}
+
+message StatusResponse {
+  int32 total_indexed_files = 1;
+  int32 total_vectors = 2;
+  bool is_watchdog_running = 3;
+  string active_model = 4;
+  repeated string watched_folders = 5;
+}

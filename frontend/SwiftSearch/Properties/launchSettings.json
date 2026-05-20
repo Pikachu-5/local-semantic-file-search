@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "SwiftSearch (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "SwiftSearch (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
