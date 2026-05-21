@@ -54,3 +54,4 @@ data/
 # LanceDB / vector DBs
 *.lance
 .lancedb/
+.fake
