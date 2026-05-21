@@ -23,8 +23,8 @@ class VectorDatabase:
     Manages LanceDB instance, table schemas, and crud operations.
     Handles the BGE (384) and Nomic (768) vector tables.
     """
-    def __init__(self):
-        self.db_dir = get_db_dir()
+    def __init__(self, db_dir: str = None):
+        self.db_dir = db_dir or get_db_dir()
         self.db = lancedb.connect(self.db_dir)
         
     def _get_table_name(self, model_name: str) -> str:

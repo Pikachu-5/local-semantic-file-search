@@ -56,7 +56,7 @@ class TestVectorDatabaseAndSearch(unittest.TestCase):
         cls.test_db_dir = os.path.join(get_db_dir(), "test_db_run")
         os.makedirs(cls.test_db_dir, exist_ok=True)
         
-        cls.db = VectorDatabase()
+        cls.db = VectorDatabase(cls.test_db_dir)
         cls.embedder = EmbeddingEngine()
         cls.searcher = HybridSearchEngine(cls.db, cls.embedder)
         cls.model_name = "BGE-Small-EN-v1.5"
