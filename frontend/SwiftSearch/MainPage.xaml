@@ -27,6 +27,10 @@
                                     Content="Settings Manager" 
                                     Tag="Settings" 
                                     Icon="Setting" />
+                <NavigationViewItem x:Name="DiagnosticsItem" 
+                                    Content="System Debugger" 
+                                    Tag="Diagnostics" 
+                                    Icon="Repair" />
             </NavigationView.MenuItems>
 
             <NavigationView.FooterMenuItems>

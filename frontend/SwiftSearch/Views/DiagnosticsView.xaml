@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="SwiftSearch.Views.DiagnosticsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="Transparent">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="24">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- Page Header -->
+            <StackPanel Grid.Row="0" Margin="0,0,0,24">
+                <TextBlock Text="System Debugger &amp; Diagnostics" 
+                           Style="{ThemeResource TitleTextBlockStyle}" 
+                           FontWeight="SemiBold" />
+                <TextBlock Text="Monitor background Python process metrics, trace active gRPC sockets, and view live system logs" 
+                           Style="{ThemeResource BodyTextBlockStyle}" 
+                           Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" />
+            </StackPanel>
+
+            <!-- Diagnostics Metrics Cards -->
+            <Grid Grid.Row="1" Margin="0,0,0,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Connection Status Card -->
+                <Border Grid.Column="0" Margin="0,0,8,0"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                        BorderThickness="1" 
+                        CornerRadius="8" 
+                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        Padding="16">
+                    <StackPanel Spacing="6" HorizontalAlignment="Center">
+                        <TextBlock Text="IPC Connection" FontSize="11" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" HorizontalAlignment="Center" />
+                        <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center" Margin="0,4,0,4">
+                            <Grid Width="12" Height="12" VerticalAlignment="Center">
+                                <Ellipse x:Name="ConnGlow" Fill="#FF3B30" Width="12" Height="12" Opacity="0.8" />
+                                <Ellipse x:Name="ConnCore" Fill="#FF3B30" Width="8" Height="8" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Grid>
+                            <TextBlock x:Name="ConnStatusText" Text="Offline" FontWeight="SemiBold" FontSize="15" VerticalAlignment="Center" />
+                        </StackPanel>
+                        <TextBlock Text="gRPC Loopback IPC" FontSize="11" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" HorizontalAlignment="Center" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Process Port & PID Card -->
+                <Border Grid.Column="1" Margin="8,0,8,0"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                        BorderThickness="1" 
+                        CornerRadius="8" 
+                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        Padding="16">
+                    <StackPanel Spacing="6" HorizontalAlignment="Center">
+                        <TextBlock Text="Process Socket" FontSize="11" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" HorizontalAlignment="Center" />
+                        <TextBlock x:Name="PortText" Text="Port: ---" FontWeight="Bold" FontSize="16" Margin="0,2,0,2" HorizontalAlignment="Center" />
+                        <TextBlock x:Name="PidText" Text="PID: ---" FontSize="11" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" HorizontalAlignment="Center" />
+                    </StackPanel>
+                </Border>
+
+                <!-- RAM Memory Consumption Card -->
+                <Border Grid.Column="2" Margin="8,0,8,0"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                        BorderThickness="1" 
+                        CornerRadius="8" 
+                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        Padding="16">
+                    <StackPanel Spacing="6" HorizontalAlignment="Center">
+                        <TextBlock Text="Memory Usage" FontSize="11" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" HorizontalAlignment="Center" />
+                        <TextBlock x:Name="MemoryText" Text="0.0 MB" FontWeight="Bold" FontSize="16" Margin="0,2,0,2" HorizontalAlignment="Center" />
+                        <TextBlock Text="Private Working Set" FontSize="11" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" HorizontalAlignment="Center" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Watchdog Observer Card -->
+                <Border Grid.Column="3" Margin="8,0,0,0"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                        BorderThickness="1" 
+                        CornerRadius="8" 
+                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        Padding="16">
+                    <StackPanel Spacing="6" HorizontalAlignment="Center">
+                        <TextBlock Text="Watchdog Observer" FontSize="11" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" HorizontalAlignment="Center" />
+                        <TextBlock x:Name="WatchdogText" Text="Inactive" FontWeight="Bold" FontSize="16" Margin="0,2,0,2" HorizontalAlignment="Center" />
+                        <TextBlock x:Name="WatchdogWatchedText" Text="0 folders monitored" FontSize="11" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" HorizontalAlignment="Center" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Controller Action Buttons -->
+            <Border Grid.Row="2" Margin="0,0,0,20"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                    BorderThickness="1" 
+                    CornerRadius="8" 
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    Padding="16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12">
+                        <!-- Ping Action -->
+                        <Button x:Name="PingButton" 
+                                Style="{ThemeResource AccentButtonStyle}" 
+                                CornerRadius="4" 
+                                Click="PingButton_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <FontIcon Glyph="&#xE73E;" FontSize="14" />
+                                <TextBlock Text="Ping Daemon" />
+                            </StackPanel>
+                        </Button>
+                        <TextBlock x:Name="PingLatencyText" Text="Latency: -- ms" VerticalAlignment="Center" FontSize="13" Margin="0,0,16,0" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" />
+
+                        <!-- Recycle Daemon -->
+                        <Button x:Name="RecycleButton" 
+                                Style="{ThemeResource DefaultButtonStyle}" 
+                                CornerRadius="4" 
+                                Click="RecycleButton_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <FontIcon Glyph="&#xE777;" FontSize="14" />
+                                <TextBlock Text="Recycle Process" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12">
+                        <!-- Open Log File -->
+                        <Button x:Name="OpenLogButton" 
+                                Style="{ThemeResource DefaultButtonStyle}" 
+                                CornerRadius="4" 
+                                Click="OpenLogButton_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <FontIcon Glyph="&#xE8A5;" FontSize="14" />
+                                <TextBlock Text="Open Log File" />
+                            </StackPanel>
+                        </Button>
+
+                        <!-- Open Config folder -->
+                        <Button x:Name="OpenConfigButton" 
+                                Style="{ThemeResource DefaultButtonStyle}" 
+                                CornerRadius="4" 
+                                Click="OpenConfigButton_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <FontIcon Glyph="&#xE8B7;" FontSize="14" />
+                                <TextBlock Text="Open Config Folder" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- MONOSPACE TERMINAL CONSOLE -->
+            <Border Grid.Row="3" 
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                    BorderThickness="1" 
+                    CornerRadius="8" 
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    Padding="16">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Console Header / Filtering Control -->
+                    <Grid Grid.Row="0" Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                            <FontIcon Glyph="&#xE756;" FontSize="16" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" />
+                            <TextBlock Text="Live Diagnostic Stream" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center" />
+                        </StackPanel>
+
+                        <!-- Search logs -->
+                        <TextBox x:Name="SearchLogTextBox" 
+                                 Grid.Column="1" 
+                                 PlaceholderText="Filter logs dynamically (e.g. 'watchdog', 'error')..." 
+                                 Margin="24,0,24,0" 
+                                 CornerRadius="4" 
+                                 TextChanged="SearchLogTextBox_TextChanged" 
+                                 Height="32" 
+                                 VerticalContentAlignment="Center" />
+
+                        <!-- Auto Scroll Toggle -->
+                        <CheckBox x:Name="AutoScrollCheck" 
+                                  Grid.Column="2" 
+                                  Content="Auto-Scroll" 
+                                  IsChecked="True" 
+                                  VerticalAlignment="Center" 
+                                  Margin="0,0,16,0" />
+
+                        <!-- Clear Logs -->
+                        <Button x:Name="ClearLogButton" 
+                                Grid.Column="3" 
+                                Style="{ThemeResource DefaultButtonStyle}" 
+                                CornerRadius="4" 
+                                Click="ClearLogButton_Click"
+                                Margin="0,0,8,0">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <FontIcon Glyph="&#xE74D;" FontSize="13" />
+                                <TextBlock Text="Clear Console" />
+                            </StackPanel>
+                        </Button>
+
+                        <!-- Copy Logs -->
+                        <Button x:Name="CopyLogButton" 
+                                Grid.Column="4" 
+                                Style="{ThemeResource DefaultButtonStyle}" 
+                                CornerRadius="4" 
+                                Click="CopyLogButton_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <FontIcon Glyph="&#xE8C8;" FontSize="13" />
+                                <TextBlock Text="Copy All" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+
+                    <!-- Terminal Output Window -->
+                    <TextBox x:Name="TerminalTextBox" 
+                             Grid.Row="1" 
+                             IsReadOnly="True" 
+                             FontFamily="Consolas" 
+                             FontSize="12" 
+                             AcceptsReturn="True" 
+                             TextWrapping="Wrap" 
+                             Background="#1E1E1E" 
+                             Foreground="#D4D4D4" 
+                             Height="420" 
+                             CornerRadius="4"
+                             BorderThickness="0"
+                             Padding="12" 
+                             ScrollViewer.VerticalScrollBarVisibility="Auto" />
+                </Grid>
+            </Border>
+        </Grid>
+    </ScrollViewer>
+</Page>

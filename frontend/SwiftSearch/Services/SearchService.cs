@@ -32,6 +32,12 @@ namespace SwiftSearch.Services
         private List<string> _excludedDirs = new();
         private List<string> _includedExtensions = new();
 
+        // Diagnostics fields
+        private int _daemonPort;
+        private int _daemonPid;
+        private readonly List<string> _logHistory = new();
+        private readonly object _logLock = new();
+
         public bool IsDaemonOnline
         {
             get => _isDaemonOnline;
@@ -80,7 +86,58 @@ namespace SwiftSearch.Services
             private set { _includedExtensions = value; OnPropertyChanged(); }
         }
 
-        private static void Log(string message)
+        // Diagnostics properties
+        public int DaemonPort
+        {
+            get => _daemonPort;
+            private set { _daemonPort = value; OnPropertyChanged(); }
+        }
+
+        public int DaemonPid
+        {
+            get => _daemonPid;
+            private set { _daemonPid = value; OnPropertyChanged(); }
+        }
+
+        public long DaemonMemoryBytes
+        {
+            get
+            {
+                if (_daemonProcess == null || _daemonProcess.HasExited) return 0;
+                try
+                {
+                    _daemonProcess.Refresh();
+                    return _daemonProcess.PrivateMemorySize64;
+                }
+                catch
+                {
+                    return 0;
+                }
+            }
+        }
+
+        public List<string> LogHistory
+        {
+            get
+            {
+                lock (_logLock)
+                {
+                    return new List<string>(_logHistory);
+                }
+            }
+        }
+
+        public event Action<string>? LogReceived;
+
+        public void ClearLogs()
+        {
+            lock (_logLock)
+            {
+                _logHistory.Clear();
+            }
+        }
+
+        private void Log(string message)
         {
             Debug.WriteLine(message);
             try
@@ -89,6 +146,17 @@ namespace SwiftSearch.Services
                 File.AppendAllText(diagPath, $"[{DateTime.Now:HH:mm:ss.fff}] {message}\n");
             }
             catch { }
+
+            lock (_logLock)
+            {
+                _logHistory.Add(message);
+                if (_logHistory.Count > 300)
+                {
+                    _logHistory.RemoveAt(0);
+                }
+            }
+            
+            _syncContext?.Post(_ => LogReceived?.Invoke(message), null);
         }
 
         public SearchService()
@@ -199,11 +267,12 @@ namespace SwiftSearch.Services
 
                 _daemonProcess = new Process { StartInfo = psi };
                 _daemonProcess.Start();
+                DaemonPid = _daemonProcess.Id;
 
                 // Assign immediately to Windows Job Objects for robust auto-termination on exit
                 ChildProcessTracker.AddProcess(_daemonProcess);
 
-                Log($"[SearchService] Daemon started (PID: {_daemonProcess.Id}). Reading stdout dynamic port...");
+                Log($"[SearchService] Daemon started (PID: {DaemonPid}). Reading stdout dynamic port...");
 
                 // Read standard output to catch dynamic gRPC port
                 int port = 0;
@@ -235,10 +304,11 @@ namespace SwiftSearch.Services
                     throw new Exception("Failed to intercept dynamic port from daemon output.");
                 }
 
-                Log($"[SearchService] Connected to dynamic port: {port}");
+                DaemonPort = port;
+                Log($"[SearchService] Connected to dynamic port: {DaemonPort}");
 
                 // Connect gRPC client channel securely via localhost loopback
-                _channel = GrpcChannel.ForAddress($"http://127.0.0.1:{port}");
+                _channel = GrpcChannel.ForAddress($"http://127.0.0.1:{DaemonPort}");
                 _client = new SearchEngine.SearchEngineClient(_channel);
 
                 IsDaemonOnline = true;
@@ -256,6 +326,8 @@ namespace SwiftSearch.Services
                 Debug.WriteLine($"[SearchService] Daemon initialization crashed: {ex.Message}");
                 IsDaemonOnline = false;
                 IsDownloadingModel = false;
+                DaemonPid = 0;
+                DaemonPort = 0;
                 throw;
             }
         }
@@ -281,6 +353,8 @@ namespace SwiftSearch.Services
             }
 
             IsDaemonOnline = false;
+            DaemonPid = 0;
+            DaemonPort = 0;
         }
 
         public async Task<List<SearchItem>> SearchAsync(string query, int topK)
@@ -432,6 +506,23 @@ namespace SwiftSearch.Services
             catch (Exception ex)
             {
                 Log($"[SearchService] Error reading daemon stderr: {ex.Message}");
+            }
+        }
+
+        public async Task<long> PingDaemonAsync()
+        {
+            if (_client == null || !IsDaemonOnline) return -1;
+            var sw = Stopwatch.StartNew();
+            try
+            {
+                await _client.GetSystemStatusAsync(new Empty());
+                sw.Stop();
+                return sw.ElapsedMilliseconds;
+            }
+            catch (Exception ex)
+            {
+                Log($"[SearchService] Ping failed: {ex.Message}");
+                return -1;
             }
         }
     }

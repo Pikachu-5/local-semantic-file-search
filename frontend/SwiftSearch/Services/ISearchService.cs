@@ -16,7 +16,15 @@ namespace SwiftSearch.Services
         List<string> WatchedFolders { get; }
         List<string> ExcludedDirs { get; }
         List<string> IncludedExtensions { get; }
+        
+        // Diagnostic properties
+        int DaemonPort { get; }
+        int DaemonPid { get; }
+        long DaemonMemoryBytes { get; }
+        List<string> LogHistory { get; }
 
+        // Diagnostic events and methods
+        event Action<string>? LogReceived;
         void StartDaemon();
         void StopDaemon();
         Task<List<SearchItem>> SearchAsync(string query, int topK);
@@ -24,5 +32,7 @@ namespace SwiftSearch.Services
         Task<bool> RemoveFolderAsync(string folderPath);
         Task<bool> UpdateSettingsAsync(string activeModel, List<string> excludedDirs, List<string> includedExtensions);
         Task RefreshStatusAsync();
+        Task<long> PingDaemonAsync();
+        void ClearLogs();
     }
 }

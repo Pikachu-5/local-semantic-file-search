@@ -54,6 +54,11 @@ class SearchEngineStub(object):
                 request_serializer=service__pb2.SettingsRequest.SerializeToString,
                 response_deserializer=service__pb2.SettingsResponse.FromString,
                 _registered_method=True)
+        self.PreloadModel = channel.unary_unary(
+                '/swiftsearch.SearchEngine/PreloadModel',
+                request_serializer=service__pb2.PreloadRequest.SerializeToString,
+                response_deserializer=service__pb2.PreloadResponse.FromString,
+                _registered_method=True)
 
 
 class SearchEngineServicer(object):
@@ -87,6 +92,13 @@ class SearchEngineServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def PreloadModel(self, request, context):
+        """Preloads/downloads a model explicitly
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_SearchEngineServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -109,6 +121,11 @@ def add_SearchEngineServicer_to_server(servicer, server):
                     servicer.UpdateSettings,
                     request_deserializer=service__pb2.SettingsRequest.FromString,
                     response_serializer=service__pb2.SettingsResponse.SerializeToString,
+            ),
+            'PreloadModel': grpc.unary_unary_rpc_method_handler(
+                    servicer.PreloadModel,
+                    request_deserializer=service__pb2.PreloadRequest.FromString,
+                    response_serializer=service__pb2.PreloadResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -219,6 +236,33 @@ class SearchEngine(object):
             '/swiftsearch.SearchEngine/UpdateSettings',
             service__pb2.SettingsRequest.SerializeToString,
             service__pb2.SettingsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def PreloadModel(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/swiftsearch.SearchEngine/PreloadModel',
+            service__pb2.PreloadRequest.SerializeToString,
+            service__pb2.PreloadResponse.FromString,
             options,
             channel_credentials,
             insecure,

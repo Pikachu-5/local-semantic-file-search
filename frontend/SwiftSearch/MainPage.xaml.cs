@@ -84,6 +84,10 @@ namespace SwiftSearch
                     MainNavView.Header = "Settings Manager";
                     ContentFrame.Navigate(typeof(Views.SettingsView));
                     break;
+                case "Diagnostics":
+                    MainNavView.Header = "System Debugger & Diagnostics";
+                    ContentFrame.Navigate(typeof(Views.DiagnosticsView));
+                    break;
             }
         }
     }
