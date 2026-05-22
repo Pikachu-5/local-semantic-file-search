@@ -75,6 +75,14 @@ namespace SwiftSearch.Core.Protos {
         __Marshaller_swiftsearch_SearchResponse);
 
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Method<global::SwiftSearch.Core.Protos.SearchRequest, global::SwiftSearch.Core.Protos.SearchResponse> __Method_EverythingSearch = new grpc::Method<global::SwiftSearch.Core.Protos.SearchRequest, global::SwiftSearch.Core.Protos.SearchResponse>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "EverythingSearch",
+        __Marshaller_swiftsearch_SearchRequest,
+        __Marshaller_swiftsearch_SearchResponse);
+
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     static readonly grpc::Method<global::SwiftSearch.Core.Protos.IndexRequest, global::SwiftSearch.Core.Protos.IndexResponse> __Method_IndexTargetFolder = new grpc::Method<global::SwiftSearch.Core.Protos.IndexRequest, global::SwiftSearch.Core.Protos.IndexResponse>(
         grpc::MethodType.Unary,
         __ServiceName,
@@ -124,6 +132,18 @@ namespace SwiftSearch.Core.Protos {
       /// <returns>The response to send back to the client (wrapped by a task).</returns>
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
       public virtual global::System.Threading.Tasks.Task<global::SwiftSearch.Core.Protos.SearchResponse> SemanticSearch(global::SwiftSearch.Core.Protos.SearchRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      /// Executes an instant filename search using the Everything SDK
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::System.Threading.Tasks.Task<global::SwiftSearch.Core.Protos.SearchResponse> EverythingSearch(global::SwiftSearch.Core.Protos.SearchRequest request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
@@ -253,6 +273,54 @@ namespace SwiftSearch.Core.Protos {
       public virtual grpc::AsyncUnaryCall<global::SwiftSearch.Core.Protos.SearchResponse> SemanticSearchAsync(global::SwiftSearch.Core.Protos.SearchRequest request, grpc::CallOptions options)
       {
         return CallInvoker.AsyncUnaryCall(__Method_SemanticSearch, null, options, request);
+      }
+      /// <summary>
+      /// Executes an instant filename search using the Everything SDK
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::SwiftSearch.Core.Protos.SearchResponse EverythingSearch(global::SwiftSearch.Core.Protos.SearchRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return EverythingSearch(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// Executes an instant filename search using the Everything SDK
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::SwiftSearch.Core.Protos.SearchResponse EverythingSearch(global::SwiftSearch.Core.Protos.SearchRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_EverythingSearch, null, options, request);
+      }
+      /// <summary>
+      /// Executes an instant filename search using the Everything SDK
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::SwiftSearch.Core.Protos.SearchResponse> EverythingSearchAsync(global::SwiftSearch.Core.Protos.SearchRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return EverythingSearchAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// Executes an instant filename search using the Everything SDK
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::SwiftSearch.Core.Protos.SearchResponse> EverythingSearchAsync(global::SwiftSearch.Core.Protos.SearchRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_EverythingSearch, null, options, request);
       }
       /// <summary>
       /// Triggers background indexing of a specific directory
@@ -437,6 +505,7 @@ namespace SwiftSearch.Core.Protos {
     {
       return grpc::ServerServiceDefinition.CreateBuilder()
           .AddMethod(__Method_SemanticSearch, serviceImpl.SemanticSearch)
+          .AddMethod(__Method_EverythingSearch, serviceImpl.EverythingSearch)
           .AddMethod(__Method_IndexTargetFolder, serviceImpl.IndexTargetFolder)
           .AddMethod(__Method_GetSystemStatus, serviceImpl.GetSystemStatus)
           .AddMethod(__Method_UpdateSettings, serviceImpl.UpdateSettings)
@@ -451,6 +520,7 @@ namespace SwiftSearch.Core.Protos {
     public static void BindService(grpc::ServiceBinderBase serviceBinder, SearchEngineBase serviceImpl)
     {
       serviceBinder.AddMethod(__Method_SemanticSearch, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::SwiftSearch.Core.Protos.SearchRequest, global::SwiftSearch.Core.Protos.SearchResponse>(serviceImpl.SemanticSearch));
+      serviceBinder.AddMethod(__Method_EverythingSearch, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::SwiftSearch.Core.Protos.SearchRequest, global::SwiftSearch.Core.Protos.SearchResponse>(serviceImpl.EverythingSearch));
       serviceBinder.AddMethod(__Method_IndexTargetFolder, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::SwiftSearch.Core.Protos.IndexRequest, global::SwiftSearch.Core.Protos.IndexResponse>(serviceImpl.IndexTargetFolder));
       serviceBinder.AddMethod(__Method_GetSystemStatus, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::SwiftSearch.Core.Protos.Empty, global::SwiftSearch.Core.Protos.StatusResponse>(serviceImpl.GetSystemStatus));
       serviceBinder.AddMethod(__Method_UpdateSettings, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::SwiftSearch.Core.Protos.SettingsRequest, global::SwiftSearch.Core.Protos.SettingsResponse>(serviceImpl.UpdateSettings));

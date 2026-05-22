@@ -437,6 +437,36 @@ namespace SwiftSearch.Services
             }
         }
 
+        public async Task<List<SearchItem>> SearchEverythingAsync(string query, int topK)
+        {
+            if (_client == null || !IsDaemonOnline) return new List<SearchItem>();
+
+            try
+            {
+                var request = new SearchRequest { Query = query, TopK = topK };
+                var response = await _client.EverythingSearchAsync(request);
+                
+                var results = new List<SearchItem>();
+                foreach (var r in response.Results)
+                {
+                    results.Add(new SearchItem
+                    {
+                        FilePath = r.FilePath,
+                        FileName = r.FileName,
+                        ChunkText = r.ChunkText,
+                        RelevanceScore = r.RelevanceScore,
+                        Query = query
+                    });
+                }
+                return results;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[SearchService] EverythingSearchAsync failed: {ex.Message}");
+                return new List<SearchItem>();
+            }
+        }
+
         public async Task<bool> IndexFolderAsync(string folderPath)
         {
             if (_client == null || !IsDaemonOnline) return false;

@@ -32,6 +32,7 @@ namespace SwiftSearch.Services
         void StartDaemon();
         void StopDaemon();
         Task<List<SearchItem>> SearchAsync(string query, int topK);
+        Task<List<SearchItem>> SearchEverythingAsync(string query, int topK);
         Task<bool> IndexFolderAsync(string folderPath);
         Task<bool> RemoveFolderAsync(string folderPath);
         Task<bool> UpdateSettingsAsync(string activeModel, List<string> excludedDirs, List<string> includedExtensions);

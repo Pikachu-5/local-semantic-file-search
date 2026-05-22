@@ -58,22 +58,14 @@ class HybridSearchEngine:
             if not raw_valid_results:
                 return []
 
-            # Extract raw scores
-            scores = [float(row.get("_score", 0.0)) for row in raw_valid_results]
-            max_score = max(scores) if scores else 0.0
-            min_score = min(scores) if scores else 0.0
-            score_range = max_score - min_score
-
             formatted_results = []
             for row in raw_valid_results:
                 file_path = row.get("file_path", "")
                 score = float(row.get("_score", 0.0))
                 
-                # Normalize raw RRF score to a gorgeous range [0.72, 0.96]
-                if score_range > 0.0:
-                    scaled_score = 0.72 + ((score - min_score) / score_range) * 0.24
-                else:
-                    scaled_score = 0.94  # Default high-quality score for single/flat results
+                # Absolute mapping of RRF score: 0.0 maps to 50%, rank 1 (~0.033) maps to 99%
+                scaled_score = 0.50 + 15.0 * score
+                scaled_score = min(0.99, max(0.50, scaled_score))
                 
                 formatted_results.append({
                     "file_path": file_path,
@@ -111,26 +103,16 @@ class HybridSearchEngine:
             if not raw_valid_results:
                 return []
 
-            # We calculate similarity scores first:
-            similarity_scores = []
-            for row in raw_valid_results:
-                distance = float(row.get("_distance", 1.0))
-                similarity_score = max(0.0, 1.0 - (distance / 2.0))
-                similarity_scores.append(similarity_score)
-
-            max_sim = max(similarity_scores) if similarity_scores else 0.0
-            min_sim = min(similarity_scores) if similarity_scores else 0.0
-            sim_range = max_sim - min_sim
-
             formatted_results = []
-            for idx, row in enumerate(raw_valid_results):
+            for row in raw_valid_results:
                 file_path = row.get("file_path", "")
-                sim = similarity_scores[idx]
+                distance = float(row.get("_distance", 1.0))
+                # Cosine similarity derived from L2 squared distance: sim = 1.0 - (distance / 2.0)
+                sim = max(0.0, min(1.0, 1.0 - (distance / 2.0)))
                 
-                if sim_range > 0.0:
-                    scaled_score = 0.72 + ((sim - min_sim) / sim_range) * 0.24
-                else:
-                    scaled_score = 0.94
+                # Absolute mapping of vector similarity: maps 0.0 to 50%, 1.0 to 99%
+                scaled_score = 0.50 + 0.49 * sim
+                scaled_score = min(0.99, max(0.50, scaled_score))
                     
                 formatted_results.append({
                     "file_path": file_path,

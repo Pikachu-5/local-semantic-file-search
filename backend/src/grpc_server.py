@@ -17,6 +17,7 @@ from db import VectorDatabase, get_db_dir
 from model import EmbeddingEngine, ProgressTracker, get_models_dir
 from hybrid import HybridSearchEngine
 from scanner import IndexScanner, DirectoryWatcher
+from everything import EverythingSearchEngine
 import queue
 import threading
 from huggingface_hub import snapshot_download
@@ -52,13 +53,47 @@ class SearchEngineServicer(service_pb2_grpc.SearchEngineServicer):
     """
     def __init__(self, config_manager: ConfigManager, db: VectorDatabase, 
                  embedder: EmbeddingEngine, search_engine: HybridSearchEngine, 
-                 scanner: IndexScanner, watcher: DirectoryWatcher):
+                 scanner: IndexScanner, watcher: DirectoryWatcher, everything_engine: EverythingSearchEngine):
         self.config = config_manager
         self.db = db
         self.embedder = embedder
         self.search_engine = search_engine
         self.scanner = scanner
         self.watcher = watcher
+        self.everything_engine = everything_engine
+
+    def EverythingSearch(self, request, context):
+        start_time = time.perf_counter()
+        query = request.query
+        top_k = request.top_k or 20
+        
+        try:
+            print(f"[*] Received EverythingSearch request: query='{query}', top_k={top_k}")
+            # Retrieve watched folders from config to limit Everything search matches to only chosen folders
+            watched_folders = self.config.get("watched_folders", [])
+            results = self.everything_engine.search(query, limit=top_k, folder_paths=watched_folders)
+            
+            proto_results = []
+            for r in results:
+                proto_results.append(service_pb2.SearchResult(
+                    file_path=r["file_path"],
+                    file_name=r["file_name"],
+                    chunk_text=r["chunk_text"],
+                    relevance_score=r["relevance_score"]
+                ))
+                
+            execution_time = (time.perf_counter() - start_time) * 1000
+            print(f"[+] Everything found {len(proto_results)} matches in {execution_time:.2f} ms")
+            
+            return service_pb2.SearchResponse(
+                results=proto_results,
+                execution_time_ms=execution_time
+            )
+        except Exception as e:
+            print(f"[-] EverythingSearch failed: {e}")
+            context.set_code(grpc.StatusCode.INTERNAL)
+            context.set_details(f"Everything search failed: {str(e)}")
+            return service_pb2.SearchResponse()
 
     def SemanticSearch(self, request, context):
         start_time = time.perf_counter()
@@ -277,13 +312,14 @@ def serve(port: str = "0") -> None:
     search_engine = HybridSearchEngine(db, embedder)
     scanner = IndexScanner(db, embedder, config_manager)
     watcher = DirectoryWatcher(db, embedder, config_manager)
+    everything_engine = EverythingSearchEngine()
     
     # 2. Fire up background watcher threads
     watcher.start()
     
     # 3. Create and bind the gRPC server listener
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    servicer = SearchEngineServicer(config_manager, db, embedder, search_engine, scanner, watcher)
+    servicer = SearchEngineServicer(config_manager, db, embedder, search_engine, scanner, watcher, everything_engine)
     service_pb2_grpc.add_SearchEngineServicer_to_server(servicer, server)
     
     # Bind to localhost exclusively to prevent firewall popups

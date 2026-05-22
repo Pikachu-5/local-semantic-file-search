@@ -8,6 +8,9 @@ service SearchEngine {
   // Executes a hybrid semantic and lexical search query
   rpc SemanticSearch (SearchRequest) returns (SearchResponse);
   
+  // Executes an instant filename search using the Everything SDK
+  rpc EverythingSearch (SearchRequest) returns (SearchResponse);
+  
   // Triggers background indexing of a specific directory
   rpc IndexTargetFolder (IndexRequest) returns (IndexResponse);
   

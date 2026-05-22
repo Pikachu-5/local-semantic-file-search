@@ -90,23 +90,77 @@ namespace SwiftSearch.Views
 
             SearchButton.IsEnabled = false;
             SearchTextBox.IsEnabled = false;
-            
-            OverlayStatusText.Text = "Searching conceptual database...";
-            OverlayPanel.Visibility = Visibility.Visible;
+
+            // Clear previous bindings and configure initial visibility states
+            EverythingListView.ItemsSource = null;
+            SemanticListView.ItemsSource = null;
+
+            EverythingSection.Visibility = Visibility.Collapsed;
+            SectionSeparator.Visibility = Visibility.Collapsed;
+            SemanticSection.Visibility = Visibility.Visible;
+            SemanticProgressRing.IsActive = true;
+            NoResultsPanel.Visibility = Visibility.Collapsed;
+            ResultsScrollViewer.Visibility = Visibility.Visible;
 
             try
             {
                 int topK = (int)TopKSlider.Value;
-                var results = await App.SearchService.SearchAsync(query, topK);
-                ResultsListView.ItemsSource = results;
+
+                // Start both searches in parallel
+                var everythingTask = App.SearchService.SearchEverythingAsync(query, topK);
+                var semanticTask = App.SearchService.SearchAsync(query, topK);
+
+                // 1. Process Everything Results (usually instantaneous)
+                var everythingResults = await everythingTask;
+                bool hasEverything = everythingResults != null && everythingResults.Count > 0;
+                if (hasEverything)
+                {
+                    EverythingListView.ItemsSource = everythingResults;
+                    EverythingSection.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    EverythingSection.Visibility = Visibility.Collapsed;
+                }
+
+                // 2. Process Semantic Results (takes 300-800ms)
+                var semanticResults = await semanticTask;
+                SemanticProgressRing.IsActive = false;
+                bool hasSemantic = semanticResults != null && semanticResults.Count > 0;
+                if (hasSemantic)
+                {
+                    SemanticListView.ItemsSource = semanticResults;
+                    SemanticSection.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    SemanticSection.Visibility = Visibility.Collapsed;
+                }
+
+                // 3. Manage Separator between sections
+                if (hasEverything && hasSemantic)
+                {
+                    SectionSeparator.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    SectionSeparator.Visibility = Visibility.Collapsed;
+                }
+
+                // 4. Handle overall empty results state
+                if (!hasEverything && !hasSemantic)
+                {
+                    NoResultsPanel.Visibility = Visibility.Visible;
+                }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"[SearchView] Search execution failed: {ex.Message}");
+                SemanticProgressRing.IsActive = false;
+                NoResultsPanel.Visibility = Visibility.Visible;
             }
             finally
             {
-                OverlayPanel.Visibility = Visibility.Collapsed;
                 SearchButton.IsEnabled = true;
                 SearchTextBox.IsEnabled = true;
             }
@@ -131,7 +185,7 @@ namespace SwiftSearch.Views
         }
     }
 
-    public static class TextHighlight
+    public class TextHighlight : DependencyObject
     {
         public static readonly DependencyProperty QueryProperty =
             DependencyProperty.RegisterAttached(

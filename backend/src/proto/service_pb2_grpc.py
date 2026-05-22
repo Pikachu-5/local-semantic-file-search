@@ -39,6 +39,11 @@ class SearchEngineStub(object):
                 request_serializer=service__pb2.SearchRequest.SerializeToString,
                 response_deserializer=service__pb2.SearchResponse.FromString,
                 _registered_method=True)
+        self.EverythingSearch = channel.unary_unary(
+                '/swiftsearch.SearchEngine/EverythingSearch',
+                request_serializer=service__pb2.SearchRequest.SerializeToString,
+                response_deserializer=service__pb2.SearchResponse.FromString,
+                _registered_method=True)
         self.IndexTargetFolder = channel.unary_unary(
                 '/swiftsearch.SearchEngine/IndexTargetFolder',
                 request_serializer=service__pb2.IndexRequest.SerializeToString,
@@ -66,6 +71,13 @@ class SearchEngineServicer(object):
 
     def SemanticSearch(self, request, context):
         """Executes a hybrid semantic and lexical search query
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def EverythingSearch(self, request, context):
+        """Executes an instant filename search using the Everything SDK
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -104,6 +116,11 @@ def add_SearchEngineServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'SemanticSearch': grpc.unary_unary_rpc_method_handler(
                     servicer.SemanticSearch,
+                    request_deserializer=service__pb2.SearchRequest.FromString,
+                    response_serializer=service__pb2.SearchResponse.SerializeToString,
+            ),
+            'EverythingSearch': grpc.unary_unary_rpc_method_handler(
+                    servicer.EverythingSearch,
                     request_deserializer=service__pb2.SearchRequest.FromString,
                     response_serializer=service__pb2.SearchResponse.SerializeToString,
             ),
@@ -153,6 +170,33 @@ class SearchEngine(object):
             request,
             target,
             '/swiftsearch.SearchEngine/SemanticSearch',
+            service__pb2.SearchRequest.SerializeToString,
+            service__pb2.SearchResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def EverythingSearch(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/swiftsearch.SearchEngine/EverythingSearch',
             service__pb2.SearchRequest.SerializeToString,
             service__pb2.SearchResponse.FromString,
             options,

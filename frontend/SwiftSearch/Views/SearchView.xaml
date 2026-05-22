@@ -71,93 +71,168 @@
 
         <!-- Main Workspace (Results Area / Loading spinner) -->
         <Grid Grid.Row="2">
-            <!-- Results ListView -->
-            <ListView x:Name="ResultsListView" 
-                      SelectionMode="None" 
-                      IsItemClickEnabled="True"
-                      ItemClick="ResultsListView_ItemClick"
-                      Padding="0,0,0,12">
-                
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                        <Setter Property="Margin" Value="0,0,0,12" />
-                        <Setter Property="Padding" Value="0" />
-                    </Style>
-                </ListView.ItemContainerStyle>
+            <!-- ScrollViewer for Unified Results -->
+            <ScrollViewer x:Name="ResultsScrollViewer" VerticalScrollBarVisibility="Auto" Padding="0,0,16,12" Visibility="Collapsed">
+                <StackPanel Spacing="24">
+                    <!-- Everything Instant Matches -->
+                    <StackPanel x:Name="EverythingSection" Visibility="Collapsed" Spacing="12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Instant Matches (NTFS Index)" 
+                                       Style="{ThemeResource SubtitleTextBlockStyle}" 
+                                       FontWeight="SemiBold" />
+                            <Border Grid.Column="1" Background="{ThemeResource AccentAAFillColorDefaultBrush}" CornerRadius="4" Padding="6,2,6,2" VerticalAlignment="Center">
+                                <TextBlock Text="Everything SDK" Foreground="White" FontSize="10" FontWeight="SemiBold" />
+                            </Border>
+                        </Grid>
+                        
+                        <ListView x:Name="EverythingListView" 
+                                  SelectionMode="None" 
+                                  IsItemClickEnabled="True"
+                                  ItemClick="ResultsListView_ItemClick"
+                                  ScrollViewer.VerticalScrollMode="Disabled">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    <Setter Property="Margin" Value="0,0,0,8" />
+                                    <Setter Property="Padding" Value="0" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                                            BorderThickness="1" 
+                                            CornerRadius="6" 
+                                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                            Padding="12,8,12,8">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <FontIcon Glyph="{Binding FileIcon}" 
+                                                      FontFamily="Segoe MDL2 Assets" 
+                                                      FontSize="20" 
+                                                      Foreground="{Binding FileIconColor}" 
+                                                      VerticalAlignment="Center" 
+                                                      Margin="0,0,12,0" />
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding FileName}" FontWeight="SemiBold" FontSize="13" />
+                                                <TextBlock Text="{Binding FilePath}" FontSize="10" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" TextTrimming="CharacterEllipsis" />
+                                            </StackPanel>
+                                            <Border Grid.Column="2" Background="{ThemeResource AccentAAFillColorDefaultBrush}" Opacity="0.85" CornerRadius="4" Padding="6,2,6,2" VerticalAlignment="Center">
+                                                <TextBlock Text="Instant" Foreground="White" FontSize="9" FontWeight="SemiBold" />
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </StackPanel>
 
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <!-- Glassmorphic Card -->
-                        <Border BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
-                                BorderThickness="1" 
-                                CornerRadius="8" 
-                                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                                Padding="16">
+                    <!-- Section Separator Line -->
+                    <MenuFlyoutSeparator x:Name="SectionSeparator" Margin="0,8" Visibility="Collapsed" />
+
+                    <!-- Semantic Conceptual Matches -->
+                    <StackPanel x:Name="SemanticSection" Visibility="Collapsed" Spacing="12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Conceptual Matches (Deep AI)" 
+                                       Style="{ThemeResource SubtitleTextBlockStyle}" 
+                                       FontWeight="SemiBold" />
                             
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
+                            <ProgressRing x:Name="SemanticProgressRing" 
+                                          Grid.Column="1" 
+                                          IsActive="False" 
+                                          Width="18" Height="18" 
+                                          Margin="12,0,0,0" 
+                                          VerticalAlignment="Center" />
+                            
+                            <Border Grid.Column="2" Background="{ThemeResource AccentAAFillColorDefaultBrush}" CornerRadius="4" Padding="6,2,6,2" Margin="12,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="Local AI Engine" Foreground="White" FontSize="10" FontWeight="SemiBold" />
+                            </Border>
+                        </Grid>
 
-                                <!-- File Icon -->
-                                <FontIcon Glyph="{Binding FileIcon}" 
-                                          FontFamily="Segoe MDL2 Assets" 
-                                          FontSize="28" 
-                                          Foreground="{Binding FileIconColor}" 
-                                          VerticalAlignment="Center" 
-                                          Margin="0,0,16,0" 
-                                          Grid.Column="0" />
-
-                                <!-- Text Details -->
-                                <Grid Grid.Column="1" Margin="0,0,16,0">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-
-                                    <!-- File Name -->
-                                    <TextBlock Text="{Binding FileName}" 
-                                               FontWeight="SemiBold" 
-                                               FontSize="15" 
-                                               Grid.Row="0" />
-
-                                    <!-- Folder Path -->
-                                    <TextBlock Text="{Binding FilePath}" 
-                                               FontSize="11" 
-                                               Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" 
-                                               Margin="0,2,0,8" 
-                                               Grid.Row="1" />
-
-                                    <!-- Text Context Snippet with Dynamic Highlighting -->
-                                    <TextBlock FontSize="13" 
-                                               TextWrapping="Wrap" 
-                                               Foreground="{ThemeResource SystemControlPageTextBaseHighBrush}"
-                                               LineHeight="18"
-                                               Grid.Row="2"
-                                               local:TextHighlight.FullText="{Binding ChunkText}"
-                                               local:TextHighlight.Query="{Binding Query}" />
-                                </Grid>
-
-                                <!-- Match relevance score badge -->
-                                <Border Background="{ThemeResource AccentAAFillColorDefaultBrush}" 
-                                        CornerRadius="6" 
-                                        Padding="8,4,8,4" 
-                                        Grid.Column="2" 
-                                        VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding FormattedScore}" 
-                                               Foreground="White" 
-                                               FontSize="11" 
-                                               FontWeight="SemiBold" />
-                                </Border>
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                        <ListView x:Name="SemanticListView" 
+                                  SelectionMode="None" 
+                                  IsItemClickEnabled="True"
+                                  ItemClick="ResultsListView_ItemClick"
+                                  ScrollViewer.VerticalScrollMode="Disabled">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    <Setter Property="Margin" Value="0,0,0,12" />
+                                    <Setter Property="Padding" Value="0" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                                            BorderThickness="1" 
+                                            CornerRadius="8" 
+                                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                            Padding="16">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <FontIcon Glyph="{Binding FileIcon}" 
+                                                      FontFamily="Segoe MDL2 Assets" 
+                                                      FontSize="28" 
+                                                      Foreground="{Binding FileIconColor}" 
+                                                      VerticalAlignment="Center" 
+                                                      Margin="0,0,16,0" />
+                                            <Grid Grid.Column="1" Margin="0,0,16,0">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Text="{Binding FileName}" FontWeight="SemiBold" FontSize="15" />
+                                                <TextBlock Text="{Binding FilePath}" FontSize="11" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" Margin="0,2,0,8" Grid.Row="1" />
+                                                <TextBlock FontSize="13" 
+                                                           TextWrapping="Wrap" 
+                                                           Foreground="{ThemeResource SystemControlPageTextBaseHighBrush}"
+                                                           LineHeight="18"
+                                                           Grid.Row="2"
+                                                           local:TextHighlight.FullText="{Binding ChunkText}"
+                                                           local:TextHighlight.Query="{Binding Query}" />
+                                            </Grid>
+                                            <Border Background="{ThemeResource AccentAAFillColorDefaultBrush}" 
+                                                    CornerRadius="6" 
+                                                    Padding="8,4,8,4" 
+                                                    Grid.Column="2" 
+                                                    VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding FormattedScore}" 
+                                                           Foreground="White" 
+                                                           FontSize="11" 
+                                                           FontWeight="SemiBold" />
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </StackPanel>
+                    
+                    <!-- No Results Panel -->
+                    <StackPanel x:Name="NoResultsPanel" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,60,0,0" Spacing="12">
+                        <FontIcon Glyph="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="48" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" />
+                        <TextBlock Text="No matching files found" Style="{ThemeResource SubtitleTextBlockStyle}" HorizontalAlignment="Center" />
+                        <TextBlock Text="Try adjusting watched folders or entering another term." FontSize="13" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" HorizontalAlignment="Center" />
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
 
             <!-- Status Overlays (Downloading Model / No Results / Indexing) -->
             <Grid x:Name="OverlayPanel" Visibility="Collapsed" Background="{ThemeResource SolidBackgroundFillColorBaseBrush}" Opacity="0.95" CornerRadius="8">
