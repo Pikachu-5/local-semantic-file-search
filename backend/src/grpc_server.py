@@ -13,10 +13,37 @@ if src_dir not in sys.path:
 from proto import service_pb2
 from proto import service_pb2_grpc
 from config import ConfigManager
-from db import VectorDatabase
-from model import EmbeddingEngine
+from db import VectorDatabase, get_db_dir
+from model import EmbeddingEngine, ProgressTracker, get_models_dir
 from hybrid import HybridSearchEngine
 from scanner import IndexScanner, DirectoryWatcher
+import queue
+import threading
+from huggingface_hub import snapshot_download
+
+def is_model_downloaded(model_name: str) -> bool:
+    repo_id = EmbeddingEngine.MODEL_MAP.get(model_name)
+    if not repo_id:
+        return False
+    folder_name = "models--" + repo_id.replace("/", "--")
+    models_dir = get_models_dir()
+    model_path = os.path.join(models_dir, folder_name)
+    if not os.path.isdir(model_path):
+        return False
+    snapshots_dir = os.path.join(model_path, "snapshots")
+    if not os.path.isdir(snapshots_dir):
+        return False
+    try:
+        snapshots = os.listdir(snapshots_dir)
+        if not snapshots:
+            return False
+        for s in snapshots:
+            snapshot_path = os.path.join(snapshots_dir, s)
+            if os.path.isdir(snapshot_path) and os.listdir(snapshot_path):
+                return True
+    except Exception:
+        pass
+    return False
 
 class SearchEngineServicer(service_pb2_grpc.SearchEngineServicer):
     """
@@ -129,19 +156,93 @@ class SearchEngineServicer(service_pb2_grpc.SearchEngineServicer):
             total_files, total_chunks = self.db.get_stats(active_model)
             is_watching = self.watcher.is_running()
             watched_list = self.watcher.get_watched_folders()
+            downloaded_models = [m for m in EmbeddingEngine.MODEL_MAP.keys() if is_model_downloaded(m)]
+            db_dir = get_db_dir()
             
             return service_pb2.StatusResponse(
                 total_indexed_files=total_files,
                 total_vectors=total_chunks,
                 is_watchdog_running=is_watching,
                 active_model=active_model,
-                watched_folders=watched_list
+                watched_folders=watched_list,
+                downloaded_models=downloaded_models,
+                db_dir=db_dir
             )
         except Exception as e:
             print(f"[-] GetSystemStatus failed: {e}")
             context.set_code(grpc.StatusCode.INTERNAL)
             context.set_details(str(e))
             return service_pb2.StatusResponse()
+
+    def DownloadModel(self, request, context):
+        model_name = request.model_name
+        repo_id = EmbeddingEngine.MODEL_MAP.get(model_name)
+        if not repo_id:
+            context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
+            context.set_details(f"Unknown model name: {model_name}")
+            return
+            
+        print(f"[*] Starting download request for model: {model_name} ({repo_id})")
+        
+        # Queue to pass progress updates from download thread to gRPC thread
+        progress_queue = queue.Queue()
+        
+        def progress_callback(n, total):
+            pct = 0.0
+            if total > 0:
+                pct = min(100.0, (float(n) / float(total)) * 100.0)
+            progress_queue.put((pct, "Downloading model files...", None))
+            
+        def download_worker():
+            try:
+                models_dir = get_models_dir()
+                # Execute inside the ProgressTracker context to capture tqdm events
+                with ProgressTracker(progress_callback):
+                    snapshot_download(
+                        repo_id=repo_id,
+                        cache_dir=models_dir,
+                    )
+                # Success
+                progress_queue.put((100.0, "Download completed successfully!", None))
+            except Exception as e:
+                print(f"[-] Error in download worker for {model_name}: {e}")
+                progress_queue.put((None, None, str(e)))
+                
+        # Start download in a daemon thread
+        t = threading.Thread(target=download_worker, daemon=True)
+        t.start()
+        
+        # Consume progress queue and yield responses to gRPC client
+        last_pct = -1.0
+        while t.is_alive() or not progress_queue.empty():
+            try:
+                # Poll queue with timeout to keep thread responsive
+                item = progress_queue.get(timeout=0.1)
+                pct, status, error_msg = item
+                
+                if error_msg is not None:
+                    yield service_pb2.DownloadModelResponse(
+                        model_name=model_name,
+                        progress=0,
+                        status="Failed",
+                        error_message=error_msg
+                    )
+                    return
+                    
+                if pct is not None:
+                    # Only yield if progress changed significantly, or at 100%
+                    if abs(pct - last_pct) >= 0.5 or pct >= 100.0:
+                        last_pct = pct
+                        yield service_pb2.DownloadModelResponse(
+                            model_name=model_name,
+                            progress=pct,
+                            status=status,
+                            error_message=""
+                        )
+            except queue.Empty:
+                continue
+                
+        print(f"[+] Finished downloading model: {model_name}")
 
     def UpdateSettings(self, request, context):
         try:

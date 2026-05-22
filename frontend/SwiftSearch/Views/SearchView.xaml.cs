@@ -2,9 +2,14 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Text;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SwiftSearch.Views
 {
@@ -122,6 +127,147 @@ namespace SwiftSearch.Views
                 {
                     Debug.WriteLine($"[SearchView] Failed to open file {item.FilePath}: {ex.Message}");
                 }
+            }
+        }
+    }
+
+    public static class TextHighlight
+    {
+        public static readonly DependencyProperty QueryProperty =
+            DependencyProperty.RegisterAttached(
+                "Query",
+                typeof(string),
+                typeof(TextHighlight),
+                new PropertyMetadata(string.Empty, OnPropertyChanged));
+
+        public static readonly DependencyProperty FullTextProperty =
+            DependencyProperty.RegisterAttached(
+                "FullText",
+                typeof(string),
+                typeof(TextHighlight),
+                new PropertyMetadata(string.Empty, OnPropertyChanged));
+
+        public static string GetQuery(DependencyObject obj) => (string)obj.GetValue(QueryProperty);
+        public static void SetQuery(DependencyObject obj, string value) => obj.SetValue(QueryProperty, value);
+
+        public static string GetFullText(DependencyObject obj) => (string)obj.GetValue(FullTextProperty);
+        public static void SetFullText(DependencyObject obj, string value) => obj.SetValue(FullTextProperty, value);
+
+        private static void OnPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is TextBlock textBlock)
+            {
+                UpdateHighlighting(textBlock);
+            }
+        }
+
+        private static void UpdateHighlighting(TextBlock textBlock)
+        {
+            textBlock.Inlines.Clear();
+            string fullText = GetFullText(textBlock);
+            string query = GetQuery(textBlock);
+
+            if (string.IsNullOrEmpty(fullText))
+            {
+                return;
+            }
+
+            if (string.IsNullOrEmpty(query))
+            {
+                textBlock.Inlines.Add(new Run { Text = fullText });
+                return;
+            }
+
+            // Split query into terms, ignore short tokens to avoid high false-positive character highlighting
+            var terms = query.Split(new[] { ' ', ',', '.', ';', ':', '-', '_', '\"', '\'' }, StringSplitOptions.RemoveEmptyEntries)
+                             .Select(t => t.Trim())
+                             .Where(t => t.Length >= 2)
+                             .Distinct()
+                             .OrderByDescending(t => t.Length)
+                             .ToList();
+
+            if (terms.Count == 0)
+            {
+                textBlock.Inlines.Add(new Run { Text = fullText });
+                return;
+            }
+
+            // Find all matching segments
+            var matches = new List<(int Start, int Length)>();
+            foreach (var term in terms)
+            {
+                int index = 0;
+                while ((index = fullText.IndexOf(term, index, StringComparison.OrdinalIgnoreCase)) != -1)
+                {
+                    matches.Add((index, term.Length));
+                    index += term.Length;
+                }
+            }
+
+            if (matches.Count == 0)
+            {
+                textBlock.Inlines.Add(new Run { Text = fullText });
+                return;
+            }
+
+            // Sort matches and merge overlapping segments
+            var sortedMatches = matches.OrderBy(m => m.Start).ThenByDescending(m => m.Length).ToList();
+            var mergedSegments = new List<(int Start, int End)>();
+
+            foreach (var match in sortedMatches)
+            {
+                int matchEnd = match.Start + match.Length;
+                if (mergedSegments.Count == 0)
+                {
+                    mergedSegments.Add((match.Start, matchEnd));
+                }
+                else
+                {
+                    var last = mergedSegments[mergedSegments.Count - 1];
+                    if (match.Start <= last.End)
+                    {
+                        mergedSegments[mergedSegments.Count - 1] = (last.Start, Math.Max(last.End, matchEnd));
+                    }
+                    else
+                    {
+                        mergedSegments.Add((match.Start, matchEnd));
+                    }
+                }
+            }
+
+            // Construct inlines
+            int currentPos = 0;
+            var accentBrush = Application.Current.Resources["AccentAAFillColorDefaultBrush"] as Brush;
+            if (accentBrush == null)
+            {
+                accentBrush = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 0, 120, 212)); // Fallback system blue
+            }
+
+            foreach (var segment in mergedSegments)
+            {
+                // Add leading normal text
+                if (segment.Start > currentPos)
+                {
+                    textBlock.Inlines.Add(new Run { Text = fullText.Substring(currentPos, segment.Start - currentPos) });
+                }
+
+                // Add highlighted text segment
+                string highlightedText = fullText.Substring(segment.Start, segment.End - segment.Start);
+                var highlightRun = new Run
+                {
+                    Text = highlightedText,
+                    FontWeight = FontWeights.Bold,
+                    Foreground = accentBrush
+                };
+                textBlock.Inlines.Add(highlightRun);
+
+                currentPos = segment.End;
+            }
+
+            // Add trailing normal text
+            if (currentPos < fullText.Length)
+            {
+                textBlock.Inlines.Add(new Run { Text = fullText.Substring(currentPos) });
             }
         }
     }

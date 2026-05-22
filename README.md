@@ -1,21 +1,21 @@
 # ⚡ SwiftSearch
 
-**SwiftSearch** is an ultra-fast, local-first semantic and hybrid search utility designed for Windows 11. It delivers lightning-fast retrieval latency ($\le 100\text{ ms}$) and has an extremely light memory footprint ($\le 150\text{ MB}$ RAM), executing 100% offline with a premium Fluent WinUI 3 dashboard.
+**SwiftSearch** is an ultra-fast, local-first semantic and hybrid search utility designed for Windows 10/11. It delivers near-instantaneous retrieval latency ($\le 100\text{ ms}$) and maintains an extremely low memory footprint ($\le 150\text{ MB}$ RAM), executing 100% offline with a premium Fluent WinUI 3 desktop dashboard.
 
 ---
 
 ## 🚀 Key Features
 
-* **🧠 Concept-Based Semantic Search:** Go beyond keyword matching. SwiftSearch matches documents based on conceptual intent using local vector embeddings (`BAAI/bge-small-en-v1.5` as default and `Nomic-Embed-Text-v1.5` as a settings-toggle upgrade).
-* **🎛️ Hybrid Search & RRF:** Combines vector similarity retrieval with traditional BM25 lexical search (FTS5) natively inside the LanceDB Rust backend using Reciprocal Rank Fusion (RRF) for optimal relevancy.
-* **🛡️ Windows Job Objects Integration:** Standard child processes can easily leak if the parent crashes. SwiftSearch wraps the Python background daemon inside native Windows Job Objects (`JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE`), ensuring that if the WinUI 3 app is closed, terminated, or crashes, the Python backend is immediately reaped by the OS kernel.
-* **🔌 Zero-Configuration Dynamic Handshake:** Binds the gRPC server to port `0`, letting the Windows OS assign the first available free port. The daemon prints `GRPC_READY:<PORT>` to stdout and flushes immediately, letting the C# client intercept the port and connect securely.
+* **🧠 Concept-Based Semantic Search:** Go beyond literal keyword matching. SwiftSearch matches documents based on conceptual intent using local vector embeddings (`BAAI/bge-small-en-v1.5` as default or `Nomic-Embed-Text-v1.5` as a settings-toggle upgrade).
+* **🎛️ Hybrid Search & RRF:** Combines semantic vector similarity with traditional BM25 lexical keyword search natively inside the Rust-backed LanceDB storage engine. It merges results using Reciprocal Rank Fusion (RRF) and applies relative score normalization for a gorgeous, intuitive percentage match display.
+* **🛡️ Windows Job Objects Integration:** standard child processes can easily leak if the parent crashes. SwiftSearch wraps the Python background daemon inside a native Windows Job Object (`JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE`), ensuring that if the WinUI 3 app is closed, terminated, or crashes, the Python backend is immediately and cleanly reaped by the OS kernel.
+* **🔌 Zero-Configuration Dynamic Handshake:** Binds the gRPC loopback listener to port `0`, letting the Windows OS assign the first available free port. The daemon prints `GRPC_READY:<PORT>` to stdout and flushes immediately, letting the C# client intercept the port and connect securely without hardcoding or network collision risks.
 * **📂 Active Directory Watchdog:** Powered by a debounced watchdog file observer that monitors watchlists. Newly added or edited files are crawled and indexed automatically; deleted files are purged in real-time.
-* **✨ Fluent UI & Overlays:** Visual cues matching the Windows 11 design guidelines, featuring a glowing network status widget, active overlays during initial weight downloads, and direct system shell execution (`Process.Start` with `UseShellExecute = true`) to launch files immediately in their default registered programs.
+* **✨ Fluent UI & High-Performance Highlighting:** Visual cues matching Windows 11 Fluent design guidelines. Features extension-aware file icons, dynamic pointer hover card transitions, and a high-performanceAttached DependencyProperty that highlights matching search terms case-insensitively inside results snippets without redrawing lag.
 
 ---
 
-## 🏗️ Architecture & Component Overview
+## 📊 Technical Architecture & Latency Breakdown
 
 ```mermaid
 graph TD
@@ -31,7 +31,7 @@ graph TD
     %% IPC Bridge
     subgraph IPC [gRPC Loopback IPC]
         SearchService -->|Reads stdout handshake| PortPort[GRPC_READY:PORT]
-        SearchService -->|Sends requests via client stub| GRPC[gRPC Channel: 127.0.0.1:PORT]
+        SearchService -->|Sends requests via client| GRPC[gRPC Channel: 127.0.0.1:PORT]
     end
 
     %% Backend Daemon
@@ -47,10 +47,36 @@ graph TD
     end
 ```
 
-### Component Details
-1. **Frontend (`frontend/SwiftSearch`):** Built with .NET 9 and Windows App SDK (WinUI 3). Implements native shell execution, responsive async loaders, and secure UI bindings.
-2. **Backend (`backend/src`):** Written in Python 3.12 using LanceDB for local vector storage, watchdog for filesystem alerts, sentence-transformers for embedding inference, and PyMuPDF for document crawling.
-3. **IPC Bridge:** A low-overhead gRPC communication link using standard Proto definitions (`proto/search_engine.proto`).
+### 1. The gRPC Loopback IPC Protocol
+All communication between the WinUI 3 desktop shell and the Python daemon flows through loopback gRPC channels. This enables highly structured, strongly typed, and synchronous IPC with zero HTTP overhead. 
+
+The protocol is defined in [service.proto](file:///c:/Codes/semantic%20file%20search/backend/proto/service.proto) and exposes:
+- **`SemanticSearch`**: A request-response channel passing queries and returning files, snippets, and normalized match scores.
+- **`IndexTargetFolder`**: Coordinates filesystem scanning, folder additions, or removals.
+- **`GetSystemStatus`**: Polls active file counts, vector metrics, system configurations, and downloaded models.
+- **`DownloadModel`**: A streaming RPC that pushes percentage-based download increments from Hugging Face back to the WinUI `ProgressBar`.
+
+### 2. Neural Embedding Models & Latency Budget
+- **`BAAI/bge-small-en-v1.5` (Default)**: A highly optimized, 384-dimensional dense retriever. Small in size (~130MB weights), it represents the optimal speed-to-accuracy ratio. 
+- **`nomic-ai/nomic-embed-text-v1.5` (Optional Upgrade)**: A 768-dimensional model supporting larger context windows, optimized for codebases and massive document stores.
+
+To maintain our **$\le 100\text{ ms}$ query latency budget**, the backend embeds incoming search terms using optimized inference routines. During indexing, CPU thread utilization is capped at 4 threads (`torch.set_num_threads(4)`) to prevent CPU bottlenecks, and memory is aggressively reclaimed (`gc.collect()`) after crawls.
+
+### 3. Dynamic Model Downloading
+When a user requests a model download from the Settings dashboard:
+1. The WinUI client initiates the `DownloadModel` streaming RPC.
+2. The Python servicer spawns a dedicated daemon thread to invoke Hugging Face's `snapshot_download`.
+3. A custom Python progress tracker monkey-patches Hugging Face's standard `tqdm` output streams to capture file byte increments, calculates real-time progress percentages, and pipes them back to the gRPC client.
+4. The WinUI interface intercepts these streaming updates on the UI thread and updates the `ProgressBar` in real-time.
+
+### 4. Reciprocal Rank Fusion & Score Normalization
+Raw scores under RRF are generated using the standard reciprocal rank formula:
+$$\text{RRF\_Score}(d) = \sum_{m \in M} \frac{1}{60 + r_m(d)}$$
+This generates scores in the range `[0.005, 0.033]`, which display poorly in typical search dashboards. SwiftSearch applies relative min-max score normalization to scale these metrics dynamically:
+- **If multiple results exist**: 
+  $$\text{Scaled\_Score} = 0.72 + \frac{\text{Score} - \text{Min\_Score}}{\text{Max\_Score} - \text{Min\_Score}} \times 0.24$$
+  This maps relative relevance into a gorgeous, high-fidelity match range of **`72.0%` to `96.0% Match`**.
+- **If flat or single results occur**: Defaults to a clean **`94.0% Match`**.
 
 ---
 
@@ -72,7 +98,7 @@ graph TD
    ```powershell
    .\setup_env.bat
    ```
-3. *(Optional)* Run the Python unit test suite to verify everything is working perfectly:
+3. Run the Python unit test suite to verify everything is working perfectly:
    ```powershell
    .venv\Scripts\python.exe -m unittest discover -s tests
    ```
@@ -93,8 +119,6 @@ graph TD
    dotnet run
    ```
 
-*Note: On first startup, the UI will intercept the Python daemon downloading the local `BGE-Small-EN-v1.5` weights and display a beautiful, non-blocking progress screen. Once downloaded, the application is 100% offline and lightning-fast.*
-
 ---
 
 ## ⚙️ Configuration & Customization
@@ -102,7 +126,7 @@ graph TD
 SwiftSearch stores all user preferences and crawled watchlists in a persistent, local configuration file located at:
 `%USERPROFILE%\AppData\Local\SwiftSearch\config.json`
 
-### Performance Tunables (via Settings Tab):
+### Core Customizations (via Settings Tab):
 * **Model Toggle:** Switch between `BGE-Small-EN-v1.5` (~130MB, CPU-optimized for $\le 100\text{ ms}$ budget) and `Nomic-Embed-Text-v1.5` (768 dimensions for extremely large codebases).
 * **Exclusion Directories:** Exclude heavy, unneeded subfolders (e.g. `node_modules`, `.git`, `bin`, `obj`) to keep indices lightweight.
 * **Extension Filters:** Narrow crawls to specific file extensions (e.g. `.txt`, `.md`, `.pdf`, `.json`, `.cs`, `.py`).

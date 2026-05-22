@@ -16,6 +16,8 @@ namespace SwiftSearch.Services
         List<string> WatchedFolders { get; }
         List<string> ExcludedDirs { get; }
         List<string> IncludedExtensions { get; }
+        List<string> DownloadedModels { get; }
+        string DbDir { get; }
         
         // Diagnostic properties
         int DaemonPort { get; }
@@ -25,6 +27,8 @@ namespace SwiftSearch.Services
 
         // Diagnostic events and methods
         event Action<string>? LogReceived;
+        event Action<string, float, string>? ModelDownloadProgressChanged;
+        Task DownloadModelAsync(string modelName);
         void StartDaemon();
         void StopDaemon();
         Task<List<SearchItem>> SearchAsync(string query, int topK);

@@ -37,18 +37,24 @@ namespace SwiftSearch.Core.Protos {
             "dGluZ3NSZXF1ZXN0EhQKDGFjdGl2ZV9tb2RlbBgBIAEoCRIVCg1leGNsdWRl",
             "ZF9kaXJzGAIgAygJEhsKE2luY2x1ZGVkX2V4dGVuc2lvbnMYAyADKAkiOgoQ",
             "U2V0dGluZ3NSZXNwb25zZRIPCgdzdWNjZXNzGAEgASgIEhUKDWVycm9yX21l",
-            "c3NhZ2UYAiABKAkiBwoFRW1wdHkikAEKDlN0YXR1c1Jlc3BvbnNlEhsKE3Rv",
+            "c3NhZ2UYAiABKAkiBwoFRW1wdHkiuwEKDlN0YXR1c1Jlc3BvbnNlEhsKE3Rv",
             "dGFsX2luZGV4ZWRfZmlsZXMYASABKAUSFQoNdG90YWxfdmVjdG9ycxgCIAEo",
             "BRIbChNpc193YXRjaGRvZ19ydW5uaW5nGAMgASgIEhQKDGFjdGl2ZV9tb2Rl",
-            "bBgEIAEoCRIXCg93YXRjaGVkX2ZvbGRlcnMYBSADKAkyuAIKDFNlYXJjaEVu",
-            "Z2luZRJJCg5TZW1hbnRpY1NlYXJjaBIaLnN3aWZ0c2VhcmNoLlNlYXJjaFJl",
-            "cXVlc3QaGy5zd2lmdHNlYXJjaC5TZWFyY2hSZXNwb25zZRJKChFJbmRleFRh",
-            "cmdldEZvbGRlchIZLnN3aWZ0c2VhcmNoLkluZGV4UmVxdWVzdBoaLnN3aWZ0",
-            "c2VhcmNoLkluZGV4UmVzcG9uc2USQgoPR2V0U3lzdGVtU3RhdHVzEhIuc3dp",
-            "ZnRzZWFyY2guRW1wdHkaGy5zd2lmdHNlYXJjaC5TdGF0dXNSZXNwb25zZRJN",
-            "Cg5VcGRhdGVTZXR0aW5ncxIcLnN3aWZ0c2VhcmNoLlNldHRpbmdzUmVxdWVz",
-            "dBodLnN3aWZ0c2VhcmNoLlNldHRpbmdzUmVzcG9uc2VCGqoCF1N3aWZ0U2Vh",
-            "cmNoLkNvcmUuUHJvdG9zYgZwcm90bzM="));
+            "bBgEIAEoCRIXCg93YXRjaGVkX2ZvbGRlcnMYBSADKAkSGQoRZG93bmxvYWRl",
+            "ZF9tb2RlbHMYBiADKAkSDgoGZGJfZGlyGAcgASgJIioKFERvd25sb2FkTW9k",
+            "ZWxSZXF1ZXN0EhIKCm1vZGVsX25hbWUYASABKAkiZAoVRG93bmxvYWRNb2Rl",
+            "bFJlc3BvbnNlEhIKCm1vZGVsX25hbWUYASABKAkSEAoIcHJvZ3Jlc3MYAiAB",
+            "KAISDgoGc3RhdHVzGAMgASgJEhUKDWVycm9yX21lc3NhZ2UYBCABKAkykgMK",
+            "DFNlYXJjaEVuZ2luZRJJCg5TZW1hbnRpY1NlYXJjaBIaLnN3aWZ0c2VhcmNo",
+            "LlNlYXJjaFJlcXVlc3QaGy5zd2lmdHNlYXJjaC5TZWFyY2hSZXNwb25zZRJK",
+            "ChFJbmRleFRhcmdldEZvbGRlchIZLnN3aWZ0c2VhcmNoLkluZGV4UmVxdWVz",
+            "dBoaLnN3aWZ0c2VhcmNoLkluZGV4UmVzcG9uc2USQgoPR2V0U3lzdGVtU3Rh",
+            "dHVzEhIuc3dpZnRzZWFyY2guRW1wdHkaGy5zd2lmdHNlYXJjaC5TdGF0dXNS",
+            "ZXNwb25zZRJNCg5VcGRhdGVTZXR0aW5ncxIcLnN3aWZ0c2VhcmNoLlNldHRp",
+            "bmdzUmVxdWVzdBodLnN3aWZ0c2VhcmNoLlNldHRpbmdzUmVzcG9uc2USWAoN",
+            "RG93bmxvYWRNb2RlbBIhLnN3aWZ0c2VhcmNoLkRvd25sb2FkTW9kZWxSZXF1",
+            "ZXN0GiIuc3dpZnRzZWFyY2guRG93bmxvYWRNb2RlbFJlc3BvbnNlMAFCGqoC",
+            "F1N3aWZ0U2VhcmNoLkNvcmUuUHJvdG9zYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -60,7 +66,9 @@ namespace SwiftSearch.Core.Protos {
             new pbr::GeneratedClrTypeInfo(typeof(global::SwiftSearch.Core.Protos.SettingsRequest), global::SwiftSearch.Core.Protos.SettingsRequest.Parser, new[]{ "ActiveModel", "ExcludedDirs", "IncludedExtensions" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::SwiftSearch.Core.Protos.SettingsResponse), global::SwiftSearch.Core.Protos.SettingsResponse.Parser, new[]{ "Success", "ErrorMessage" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::SwiftSearch.Core.Protos.Empty), global::SwiftSearch.Core.Protos.Empty.Parser, null, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::SwiftSearch.Core.Protos.StatusResponse), global::SwiftSearch.Core.Protos.StatusResponse.Parser, new[]{ "TotalIndexedFiles", "TotalVectors", "IsWatchdogRunning", "ActiveModel", "WatchedFolders" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::SwiftSearch.Core.Protos.StatusResponse), global::SwiftSearch.Core.Protos.StatusResponse.Parser, new[]{ "TotalIndexedFiles", "TotalVectors", "IsWatchdogRunning", "ActiveModel", "WatchedFolders", "DownloadedModels", "DbDir" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::SwiftSearch.Core.Protos.DownloadModelRequest), global::SwiftSearch.Core.Protos.DownloadModelRequest.Parser, new[]{ "ModelName" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::SwiftSearch.Core.Protos.DownloadModelResponse), global::SwiftSearch.Core.Protos.DownloadModelResponse.Parser, new[]{ "ModelName", "Progress", "Status", "ErrorMessage" }, null, null, null, null)
           }));
     }
     #endregion
@@ -2039,6 +2047,8 @@ namespace SwiftSearch.Core.Protos {
       isWatchdogRunning_ = other.isWatchdogRunning_;
       activeModel_ = other.activeModel_;
       watchedFolders_ = other.watchedFolders_.Clone();
+      downloadedModels_ = other.downloadedModels_.Clone();
+      dbDir_ = other.dbDir_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -2107,6 +2117,29 @@ namespace SwiftSearch.Core.Protos {
       get { return watchedFolders_; }
     }
 
+    /// <summary>Field number for the "downloaded_models" field.</summary>
+    public const int DownloadedModelsFieldNumber = 6;
+    private static readonly pb::FieldCodec<string> _repeated_downloadedModels_codec
+        = pb::FieldCodec.ForString(50);
+    private readonly pbc::RepeatedField<string> downloadedModels_ = new pbc::RepeatedField<string>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<string> DownloadedModels {
+      get { return downloadedModels_; }
+    }
+
+    /// <summary>Field number for the "db_dir" field.</summary>
+    public const int DbDirFieldNumber = 7;
+    private string dbDir_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string DbDir {
+      get { return dbDir_; }
+      set {
+        dbDir_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -2127,6 +2160,8 @@ namespace SwiftSearch.Core.Protos {
       if (IsWatchdogRunning != other.IsWatchdogRunning) return false;
       if (ActiveModel != other.ActiveModel) return false;
       if(!watchedFolders_.Equals(other.watchedFolders_)) return false;
+      if(!downloadedModels_.Equals(other.downloadedModels_)) return false;
+      if (DbDir != other.DbDir) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -2139,6 +2174,8 @@ namespace SwiftSearch.Core.Protos {
       if (IsWatchdogRunning != false) hash ^= IsWatchdogRunning.GetHashCode();
       if (ActiveModel.Length != 0) hash ^= ActiveModel.GetHashCode();
       hash ^= watchedFolders_.GetHashCode();
+      hash ^= downloadedModels_.GetHashCode();
+      if (DbDir.Length != 0) hash ^= DbDir.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -2174,6 +2211,11 @@ namespace SwiftSearch.Core.Protos {
         output.WriteString(ActiveModel);
       }
       watchedFolders_.WriteTo(output, _repeated_watchedFolders_codec);
+      downloadedModels_.WriteTo(output, _repeated_downloadedModels_codec);
+      if (DbDir.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(DbDir);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -2201,6 +2243,11 @@ namespace SwiftSearch.Core.Protos {
         output.WriteString(ActiveModel);
       }
       watchedFolders_.WriteTo(ref output, _repeated_watchedFolders_codec);
+      downloadedModels_.WriteTo(ref output, _repeated_downloadedModels_codec);
+      if (DbDir.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(DbDir);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -2224,6 +2271,10 @@ namespace SwiftSearch.Core.Protos {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(ActiveModel);
       }
       size += watchedFolders_.CalculateSize(_repeated_watchedFolders_codec);
+      size += downloadedModels_.CalculateSize(_repeated_downloadedModels_codec);
+      if (DbDir.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(DbDir);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -2249,6 +2300,10 @@ namespace SwiftSearch.Core.Protos {
         ActiveModel = other.ActiveModel;
       }
       watchedFolders_.Add(other.watchedFolders_);
+      downloadedModels_.Add(other.downloadedModels_);
+      if (other.DbDir.Length != 0) {
+        DbDir = other.DbDir;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -2284,6 +2339,14 @@ namespace SwiftSearch.Core.Protos {
             watchedFolders_.AddEntriesFrom(input, _repeated_watchedFolders_codec);
             break;
           }
+          case 50: {
+            downloadedModels_.AddEntriesFrom(input, _repeated_downloadedModels_codec);
+            break;
+          }
+          case 58: {
+            DbDir = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -2317,6 +2380,508 @@ namespace SwiftSearch.Core.Protos {
           }
           case 42: {
             watchedFolders_.AddEntriesFrom(ref input, _repeated_watchedFolders_codec);
+            break;
+          }
+          case 50: {
+            downloadedModels_.AddEntriesFrom(ref input, _repeated_downloadedModels_codec);
+            break;
+          }
+          case 58: {
+            DbDir = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class DownloadModelRequest : pb::IMessage<DownloadModelRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<DownloadModelRequest> _parser = new pb::MessageParser<DownloadModelRequest>(() => new DownloadModelRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<DownloadModelRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::SwiftSearch.Core.Protos.ServiceReflection.Descriptor.MessageTypes[9]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public DownloadModelRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public DownloadModelRequest(DownloadModelRequest other) : this() {
+      modelName_ = other.modelName_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public DownloadModelRequest Clone() {
+      return new DownloadModelRequest(this);
+    }
+
+    /// <summary>Field number for the "model_name" field.</summary>
+    public const int ModelNameFieldNumber = 1;
+    private string modelName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ModelName {
+      get { return modelName_; }
+      set {
+        modelName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as DownloadModelRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(DownloadModelRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (ModelName != other.ModelName) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (ModelName.Length != 0) hash ^= ModelName.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (ModelName.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(ModelName);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (ModelName.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(ModelName);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (ModelName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ModelName);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(DownloadModelRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.ModelName.Length != 0) {
+        ModelName = other.ModelName;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            ModelName = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            ModelName = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class DownloadModelResponse : pb::IMessage<DownloadModelResponse>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<DownloadModelResponse> _parser = new pb::MessageParser<DownloadModelResponse>(() => new DownloadModelResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<DownloadModelResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::SwiftSearch.Core.Protos.ServiceReflection.Descriptor.MessageTypes[10]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public DownloadModelResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public DownloadModelResponse(DownloadModelResponse other) : this() {
+      modelName_ = other.modelName_;
+      progress_ = other.progress_;
+      status_ = other.status_;
+      errorMessage_ = other.errorMessage_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public DownloadModelResponse Clone() {
+      return new DownloadModelResponse(this);
+    }
+
+    /// <summary>Field number for the "model_name" field.</summary>
+    public const int ModelNameFieldNumber = 1;
+    private string modelName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ModelName {
+      get { return modelName_; }
+      set {
+        modelName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "progress" field.</summary>
+    public const int ProgressFieldNumber = 2;
+    private float progress_;
+    /// <summary>
+    /// 0.0 to 100.0
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public float Progress {
+      get { return progress_; }
+      set {
+        progress_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "status" field.</summary>
+    public const int StatusFieldNumber = 3;
+    private string status_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Status {
+      get { return status_; }
+      set {
+        status_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "error_message" field.</summary>
+    public const int ErrorMessageFieldNumber = 4;
+    private string errorMessage_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ErrorMessage {
+      get { return errorMessage_; }
+      set {
+        errorMessage_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as DownloadModelResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(DownloadModelResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (ModelName != other.ModelName) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Progress, other.Progress)) return false;
+      if (Status != other.Status) return false;
+      if (ErrorMessage != other.ErrorMessage) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (ModelName.Length != 0) hash ^= ModelName.GetHashCode();
+      if (Progress != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Progress);
+      if (Status.Length != 0) hash ^= Status.GetHashCode();
+      if (ErrorMessage.Length != 0) hash ^= ErrorMessage.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (ModelName.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(ModelName);
+      }
+      if (Progress != 0F) {
+        output.WriteRawTag(21);
+        output.WriteFloat(Progress);
+      }
+      if (Status.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Status);
+      }
+      if (ErrorMessage.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(ErrorMessage);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (ModelName.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(ModelName);
+      }
+      if (Progress != 0F) {
+        output.WriteRawTag(21);
+        output.WriteFloat(Progress);
+      }
+      if (Status.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Status);
+      }
+      if (ErrorMessage.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(ErrorMessage);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (ModelName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ModelName);
+      }
+      if (Progress != 0F) {
+        size += 1 + 4;
+      }
+      if (Status.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Status);
+      }
+      if (ErrorMessage.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ErrorMessage);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(DownloadModelResponse other) {
+      if (other == null) {
+        return;
+      }
+      if (other.ModelName.Length != 0) {
+        ModelName = other.ModelName;
+      }
+      if (other.Progress != 0F) {
+        Progress = other.Progress;
+      }
+      if (other.Status.Length != 0) {
+        Status = other.Status;
+      }
+      if (other.ErrorMessage.Length != 0) {
+        ErrorMessage = other.ErrorMessage;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            ModelName = input.ReadString();
+            break;
+          }
+          case 21: {
+            Progress = input.ReadFloat();
+            break;
+          }
+          case 26: {
+            Status = input.ReadString();
+            break;
+          }
+          case 34: {
+            ErrorMessage = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            ModelName = input.ReadString();
+            break;
+          }
+          case 21: {
+            Progress = input.ReadFloat();
+            break;
+          }
+          case 26: {
+            Status = input.ReadString();
+            break;
+          }
+          case 34: {
+            ErrorMessage = input.ReadString();
             break;
           }
         }

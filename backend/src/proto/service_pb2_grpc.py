@@ -54,10 +54,10 @@ class SearchEngineStub(object):
                 request_serializer=service__pb2.SettingsRequest.SerializeToString,
                 response_deserializer=service__pb2.SettingsResponse.FromString,
                 _registered_method=True)
-        self.PreloadModel = channel.unary_unary(
-                '/swiftsearch.SearchEngine/PreloadModel',
-                request_serializer=service__pb2.PreloadRequest.SerializeToString,
-                response_deserializer=service__pb2.PreloadResponse.FromString,
+        self.DownloadModel = channel.unary_stream(
+                '/swiftsearch.SearchEngine/DownloadModel',
+                request_serializer=service__pb2.DownloadModelRequest.SerializeToString,
+                response_deserializer=service__pb2.DownloadModelResponse.FromString,
                 _registered_method=True)
 
 
@@ -92,8 +92,8 @@ class SearchEngineServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def PreloadModel(self, request, context):
-        """Preloads/downloads a model explicitly
+    def DownloadModel(self, request, context):
+        """Starts downloading a model and returns a stream of download progress (0 to 100%)
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -122,10 +122,10 @@ def add_SearchEngineServicer_to_server(servicer, server):
                     request_deserializer=service__pb2.SettingsRequest.FromString,
                     response_serializer=service__pb2.SettingsResponse.SerializeToString,
             ),
-            'PreloadModel': grpc.unary_unary_rpc_method_handler(
-                    servicer.PreloadModel,
-                    request_deserializer=service__pb2.PreloadRequest.FromString,
-                    response_serializer=service__pb2.PreloadResponse.SerializeToString,
+            'DownloadModel': grpc.unary_stream_rpc_method_handler(
+                    servicer.DownloadModel,
+                    request_deserializer=service__pb2.DownloadModelRequest.FromString,
+                    response_serializer=service__pb2.DownloadModelResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -247,7 +247,7 @@ class SearchEngine(object):
             _registered_method=True)
 
     @staticmethod
-    def PreloadModel(request,
+    def DownloadModel(request,
             target,
             options=(),
             channel_credentials=None,
@@ -257,12 +257,12 @@ class SearchEngine(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
+        return grpc.experimental.unary_stream(
             request,
             target,
-            '/swiftsearch.SearchEngine/PreloadModel',
-            service__pb2.PreloadRequest.SerializeToString,
-            service__pb2.PreloadResponse.FromString,
+            '/swiftsearch.SearchEngine/DownloadModel',
+            service__pb2.DownloadModelRequest.SerializeToString,
+            service__pb2.DownloadModelResponse.FromString,
             options,
             channel_credentials,
             insecure,

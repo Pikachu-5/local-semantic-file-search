@@ -22,6 +22,7 @@ namespace SwiftSearch.Views
         {
             base.OnNavigatedTo(e);
             App.SearchService.PropertyChanged += SearchService_PropertyChanged;
+            App.SearchService.ModelDownloadProgressChanged += SearchService_ModelDownloadProgressChanged;
             
             // Initial UI sync
             SyncSettingsToUI();
@@ -31,6 +32,7 @@ namespace SwiftSearch.Views
         {
             base.OnNavigatedFrom(e);
             App.SearchService.PropertyChanged -= SearchService_PropertyChanged;
+            App.SearchService.ModelDownloadProgressChanged -= SearchService_ModelDownloadProgressChanged;
         }
 
         private void SearchService_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -39,6 +41,34 @@ namespace SwiftSearch.Views
             {
                 SyncSettingsToUI();
             });
+        }
+
+        private void SearchService_ModelDownloadProgressChanged(string modelName, float progress, string status)
+        {
+            DispatcherQueue.TryEnqueue(() =>
+            {
+                if (progress < 100.0 && !status.StartsWith("Failed"))
+                {
+                    DownloadProgressPanel.Visibility = Visibility.Visible;
+                    DownloadStatusText.Text = $"{status} ({modelName})";
+                    DownloadProgressPercent.Text = $"{progress:F1}%";
+                    DownloadProgressBar.Value = progress;
+                }
+                else
+                {
+                    DownloadProgressPanel.Visibility = Visibility.Collapsed;
+                }
+            });
+        }
+
+        private bool AreListsEqual(List<string> list1, List<string> list2)
+        {
+            if (list1.Count != list2.Count) return false;
+            for (int i = 0; i < list1.Count; i++)
+            {
+                if (list1[i] != list2[i]) return false;
+            }
+            return true;
         }
 
         private void SyncSettingsToUI()
@@ -75,9 +105,24 @@ namespace SwiftSearch.Views
                     NomicModelRadio.IsChecked = true;
                 }
 
-                // 3. Watched Folders ListView
-                FoldersListView.ItemsSource = null;
-                FoldersListView.ItemsSource = service.WatchedFolders;
+                // Model Downloaded Sync
+                bool isBgeDownloaded = service.DownloadedModels.Contains("BGE-Small-EN-v1.5");
+                BgeDownloadedText.Visibility = isBgeDownloaded ? Visibility.Visible : Visibility.Collapsed;
+                BgeDownloadButton.Visibility = isBgeDownloaded ? Visibility.Collapsed : Visibility.Visible;
+
+                bool isNomicDownloaded = service.DownloadedModels.Contains("Nomic-Embed-Text-v1.5");
+                NomicDownloadedText.Visibility = isNomicDownloaded ? Visibility.Visible : Visibility.Collapsed;
+                NomicDownloadButton.Visibility = isNomicDownloaded ? Visibility.Collapsed : Visibility.Visible;
+
+                DbDirText.Text = string.IsNullOrEmpty(service.DbDir) ? "Not loaded" : service.DbDir;
+
+                // 3. Watched Folders ListView (Avoid reset if structural content matches)
+                var currentItems = FoldersListView.ItemsSource as List<string>;
+                if (currentItems == null || !AreListsEqual(currentItems, service.WatchedFolders))
+                {
+                    FoldersListView.ItemsSource = null;
+                    FoldersListView.ItemsSource = service.WatchedFolders;
+                }
 
                 // 4. Exclusions and Extensions TextBoxes (only update if not currently focused to avoid typing interruptions)
                 var focusedElement = Microsoft.UI.Xaml.Input.FocusManager.GetFocusedElement(this.XamlRoot);
@@ -195,6 +240,61 @@ namespace SwiftSearch.Views
                 finally
                 {
                     button.IsEnabled = true;
+                }
+            }
+        }
+
+        private async void DownloadBgeButton_Click(object sender, RoutedEventArgs e)
+        {
+            BgeDownloadButton.IsEnabled = false;
+            try
+            {
+                await App.SearchService.DownloadModelAsync("BGE-Small-EN-v1.5");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[SettingsView] Failed to download BGE: {ex.Message}");
+            }
+            finally
+            {
+                BgeDownloadButton.IsEnabled = true;
+            }
+        }
+
+        private async void DownloadNomicButton_Click(object sender, RoutedEventArgs e)
+        {
+            NomicDownloadButton.IsEnabled = false;
+            try
+            {
+                await App.SearchService.DownloadModelAsync("Nomic-Embed-Text-v1.5");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[SettingsView] Failed to download Nomic: {ex.Message}");
+            }
+            finally
+            {
+                NomicDownloadButton.IsEnabled = true;
+            }
+        }
+
+        private void OpenDbDirButton_Click(object sender, RoutedEventArgs e)
+        {
+            string dbDir = App.SearchService.DbDir;
+            if (!string.IsNullOrEmpty(dbDir) && System.IO.Directory.Exists(dbDir))
+            {
+                try
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "explorer.exe",
+                        Arguments = $"\"{dbDir}\"",
+                        UseShellExecute = true
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[SettingsView] Failed to open folder: {ex.Message}");
                 }
             }
         }

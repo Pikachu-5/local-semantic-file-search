@@ -96,6 +96,10 @@ class IndexScanner:
                 files_processed += 1
                 chunks_created += len(chunks)
                 
+                # Active garbage collection after each file to keep RAM usage optimized
+                import gc
+                gc.collect()
+                
             except Exception as e:
                 print(f"[-] Failed to index file {file_path}: {e}")
 
@@ -103,6 +107,8 @@ class IndexScanner:
         if files_processed > 0:
             self.db.rebuild_fts_index(model_name)
 
+        import gc
+        gc.collect()
         return files_processed, chunks_created
 
 

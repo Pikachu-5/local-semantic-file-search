@@ -6,6 +6,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Grpc.Core;
 using Grpc.Net.Client;
 using SwiftSearch.Core;
 using SwiftSearch.Core.Protos;
@@ -31,6 +32,8 @@ namespace SwiftSearch.Services
         private List<string> _watchedFolders = new();
         private List<string> _excludedDirs = new();
         private List<string> _includedExtensions = new();
+        private List<string> _downloadedModels = new();
+        private string _dbDir = string.Empty;
 
         // Diagnostics fields
         private int _daemonPort;
@@ -86,6 +89,18 @@ namespace SwiftSearch.Services
             private set { _includedExtensions = value; OnPropertyChanged(); }
         }
 
+        public List<string> DownloadedModels
+        {
+            get => _downloadedModels;
+            private set { _downloadedModels = value; OnPropertyChanged(); }
+        }
+
+        public string DbDir
+        {
+            get => _dbDir;
+            private set { _dbDir = value; OnPropertyChanged(); }
+        }
+
         // Diagnostics properties
         public int DaemonPort
         {
@@ -128,6 +143,41 @@ namespace SwiftSearch.Services
         }
 
         public event Action<string>? LogReceived;
+        public event Action<string, float, string>? ModelDownloadProgressChanged;
+
+        public async Task DownloadModelAsync(string modelName)
+        {
+            if (_client == null || !IsDaemonOnline) return;
+
+            IsDownloadingModel = true;
+            try
+            {
+                var request = new DownloadModelRequest { ModelName = modelName };
+                using var call = _client.DownloadModel(request);
+                
+                while (await call.ResponseStream.MoveNext(default(CancellationToken)))
+                {
+                    var response = call.ResponseStream.Current;
+                    _syncContext?.Post(_ => 
+                    {
+                        ModelDownloadProgressChanged?.Invoke(response.ModelName, response.Progress, response.Status);
+                    }, null);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[SearchService] DownloadModelAsync failed: {ex.Message}");
+                _syncContext?.Post(_ => 
+                {
+                    ModelDownloadProgressChanged?.Invoke(modelName, 0, $"Failed: {ex.Message}");
+                }, null);
+            }
+            finally
+            {
+                IsDownloadingModel = false;
+                await RefreshStatusAsync();
+            }
+        }
 
         public void ClearLogs()
         {
@@ -374,7 +424,8 @@ namespace SwiftSearch.Services
                         FilePath = r.FilePath,
                         FileName = r.FileName,
                         ChunkText = r.ChunkText,
-                        RelevanceScore = r.RelevanceScore
+                        RelevanceScore = r.RelevanceScore,
+                        Query = query
                     });
                 }
                 return results;
@@ -428,6 +479,16 @@ namespace SwiftSearch.Services
             }
         }
 
+        private bool AreListsEqual(List<string> list1, List<string> list2)
+        {
+            if (list1.Count != list2.Count) return false;
+            for (int i = 0; i < list1.Count; i++)
+            {
+                if (list1[i] != list2[i]) return false;
+            }
+            return true;
+        }
+
         public async Task RefreshStatusAsync()
         {
             if (_client == null) return;
@@ -443,7 +504,21 @@ namespace SwiftSearch.Services
                 ActiveModel = response.ActiveModel;
                 
                 var watched = new List<string>(response.WatchedFolders);
-                WatchedFolders = watched;
+                if (!AreListsEqual(_watchedFolders, watched))
+                {
+                    WatchedFolders = watched;
+                }
+
+                var downloaded = new List<string>(response.DownloadedModels);
+                if (!AreListsEqual(_downloadedModels, downloaded))
+                {
+                    DownloadedModels = downloaded;
+                }
+
+                if (_dbDir != response.DbDir)
+                {
+                    DbDir = response.DbDir;
+                }
             }
             catch (Exception ex)
             {

@@ -52,26 +52,59 @@
                                        Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" 
                                        TextWrapping="Wrap" />
                             
-                            <RadioButton x:Name="BgeModelRadio" 
-                                         Content="BGE-Small-EN-v1.5 (Default)" 
-                                         GroupName="ModelEngine" 
-                                         IsChecked="True" 
-                                         Checked="ModelRadio_Checked" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <RadioButton x:Name="BgeModelRadio" 
+                                             Content="BGE-Small-EN-v1.5 (Default)" 
+                                             GroupName="ModelEngine" 
+                                             IsChecked="True" 
+                                             Checked="ModelRadio_Checked" />
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                                    <TextBlock x:Name="BgeDownloadedText" Text="Downloaded" Foreground="Green" FontWeight="SemiBold" VerticalAlignment="Center" Visibility="Collapsed" FontSize="12" />
+                                    <Button x:Name="BgeDownloadButton" Content="Download" Click="DownloadBgeButton_Click" CornerRadius="4" Padding="12,4,12,4" FontSize="12" />
+                                </StackPanel>
+                            </Grid>
                             <TextBlock Text="High-speed retrieval. Model size ~130MB. Perfect for standard laptops." 
                                        FontSize="11" 
                                        Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" 
                                        Margin="28,-8,0,0" 
                                        TextWrapping="Wrap" />
 
-                            <RadioButton x:Name="NomicModelRadio" 
-                                         Content="Nomic-Embed-Text-v1.5" 
-                                         GroupName="ModelEngine" 
-                                         Checked="ModelRadio_Checked" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <RadioButton x:Name="NomicModelRadio" 
+                                             Content="Nomic-Embed-Text-v1.5" 
+                                             GroupName="ModelEngine" 
+                                             Checked="ModelRadio_Checked" />
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                                    <TextBlock x:Name="NomicDownloadedText" Text="Downloaded" Foreground="Green" FontWeight="SemiBold" VerticalAlignment="Center" Visibility="Collapsed" FontSize="12" />
+                                    <Button x:Name="NomicDownloadButton" Content="Download" Click="DownloadNomicButton_Click" CornerRadius="4" Padding="12,4,12,4" FontSize="12" />
+                                </StackPanel>
+                            </Grid>
                             <TextBlock Text="Deep semantic context. Model size ~280MB. Higher RAM usage." 
                                        FontSize="11" 
                                        Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" 
                                        Margin="28,-8,0,0" 
                                        TextWrapping="Wrap" />
+                            
+                            <!-- Model Download Progress Card -->
+                            <StackPanel x:Name="DownloadProgressPanel" Spacing="8" Margin="0,12,0,0" Visibility="Collapsed">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock x:Name="DownloadStatusText" Text="Downloading BGE-Small-EN-v1.5..." FontSize="12" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" />
+                                    <TextBlock x:Name="DownloadProgressPercent" Text="45%" FontWeight="SemiBold" FontSize="12" Grid.Column="1" />
+                                </Grid>
+                                <ProgressBar x:Name="DownloadProgressBar" Value="45" Minimum="0" Maximum="100" Height="6" CornerRadius="3" />
+                            </StackPanel>
                         </StackPanel>
                     </Border>
 
@@ -110,6 +143,23 @@
                                 <TextBlock Text="Live File Observer:" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" />
                                 <TextBlock x:Name="StatsWatchdogText" Text="Active Monitoring" Foreground="Green" FontWeight="SemiBold" Grid.Column="1" />
                             </Grid>
+                            
+                            <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="0,4,0,4" />
+                            
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Vector Database Storage Directory:" FontSize="13" FontWeight="SemiBold" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock x:Name="DbDirText" Text="C:\Users\ayub-\AppData\Local\SwiftSearch\db" 
+                                               FontSize="11" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" 
+                                               TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,12,0" />
+                                    <Button x:Name="OpenDbDirButton" Content="Open Folder" Click="OpenDbDirButton_Click" 
+                                            Style="{ThemeResource DefaultButtonStyle}" Grid.Column="1" CornerRadius="4" />
+                                </Grid>
+                            </StackPanel>
                         </StackPanel>
                     </Border>
                 </StackPanel>

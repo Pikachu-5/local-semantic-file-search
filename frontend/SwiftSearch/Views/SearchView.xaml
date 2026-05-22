@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="using:SwiftSearch.Views"
     mc:Ignorable="d"
     Background="Transparent">
 
@@ -95,46 +96,63 @@
                                 Padding="16">
                             
                             <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <!-- File Name and Extension -->
-                                <TextBlock Text="{Binding FileName}" 
-                                           FontWeight="SemiBold" 
-                                           FontSize="15" 
-                                           Grid.Row="0" Grid.Column="0" />
+                                <!-- File Icon -->
+                                <FontIcon Glyph="{Binding FileIcon}" 
+                                          FontFamily="Segoe MDL2 Assets" 
+                                          FontSize="28" 
+                                          Foreground="{Binding FileIconColor}" 
+                                          VerticalAlignment="Center" 
+                                          Margin="0,0,16,0" 
+                                          Grid.Column="0" />
+
+                                <!-- Text Details -->
+                                <Grid Grid.Column="1" Margin="0,0,16,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+
+                                    <!-- File Name -->
+                                    <TextBlock Text="{Binding FileName}" 
+                                               FontWeight="SemiBold" 
+                                               FontSize="15" 
+                                               Grid.Row="0" />
+
+                                    <!-- Folder Path -->
+                                    <TextBlock Text="{Binding FilePath}" 
+                                               FontSize="11" 
+                                               Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" 
+                                               Margin="0,2,0,8" 
+                                               Grid.Row="1" />
+
+                                    <!-- Text Context Snippet with Dynamic Highlighting -->
+                                    <TextBlock FontSize="13" 
+                                               TextWrapping="Wrap" 
+                                               Foreground="{ThemeResource SystemControlPageTextBaseHighBrush}"
+                                               LineHeight="18"
+                                               Grid.Row="2"
+                                               local:TextHighlight.FullText="{Binding ChunkText}"
+                                               local:TextHighlight.Query="{Binding Query}" />
+                                </Grid>
 
                                 <!-- Match relevance score badge -->
                                 <Border Background="{ThemeResource AccentAAFillColorDefaultBrush}" 
-                                        CornerRadius="4" 
-                                        Padding="6,2,6,2" 
-                                        Grid.Row="0" Grid.Column="1" 
+                                        CornerRadius="6" 
+                                        Padding="8,4,8,4" 
+                                        Grid.Column="2" 
                                         VerticalAlignment="Center">
                                     <TextBlock Text="{Binding FormattedScore}" 
                                                Foreground="White" 
                                                FontSize="11" 
                                                FontWeight="SemiBold" />
                                 </Border>
-
-                                <!-- Folder Path -->
-                                <TextBlock Text="{Binding FilePath}" 
-                                           FontSize="12" 
-                                           Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" 
-                                           Margin="0,4,0,8" 
-                                           Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" />
-
-                                <!-- Text Context Snippet -->
-                                <TextBlock Text="{Binding ChunkText}" 
-                                           FontSize="13" 
-                                           TextWrapping="Wrap" 
-                                           Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" />
                             </Grid>
                         </Border>
                     </DataTemplate>

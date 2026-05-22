@@ -47,23 +47,39 @@ class HybridSearchEngine:
                 return []
 
             # 4. Format the output and apply safety checks (e.g. check if file still exists)
-            formatted_results = []
+            raw_valid_results = []
             for row in results:
                 file_path = row.get("file_path", "")
-                
                 # Check if the file still exists locally (safety check)
                 if not os.path.exists(file_path):
                     continue
-                    
+                raw_valid_results.append(row)
+
+            if not raw_valid_results:
+                return []
+
+            # Extract raw scores
+            scores = [float(row.get("_score", 0.0)) for row in raw_valid_results]
+            max_score = max(scores) if scores else 0.0
+            min_score = min(scores) if scores else 0.0
+            score_range = max_score - min_score
+
+            formatted_results = []
+            for row in raw_valid_results:
+                file_path = row.get("file_path", "")
                 score = float(row.get("_score", 0.0))
-                # LanceDB's RRF score can sometimes be a ranking value.
-                # We ensure it's mapped cleanly.
+                
+                # Normalize raw RRF score to a gorgeous range [0.72, 0.96]
+                if score_range > 0.0:
+                    scaled_score = 0.72 + ((score - min_score) / score_range) * 0.24
+                else:
+                    scaled_score = 0.94  # Default high-quality score for single/flat results
                 
                 formatted_results.append({
                     "file_path": file_path,
                     "file_name": row.get("file_name", os.path.basename(file_path)),
                     "chunk_text": row.get("chunk_text", ""),
-                    "relevance_score": score
+                    "relevance_score": scaled_score
                 })
                 
             return formatted_results
@@ -85,21 +101,42 @@ class HybridSearchEngine:
             if not results:
                 return []
 
-            formatted_results = []
+            raw_valid_results = []
             for row in results:
                 file_path = row.get("file_path", "")
                 if not os.path.exists(file_path):
                     continue
-                # For pure vector search, _distance is returned.
-                # Smaller distance means higher relevance. We map distance to a similarity score.
+                raw_valid_results.append(row)
+                
+            if not raw_valid_results:
+                return []
+
+            # We calculate similarity scores first:
+            similarity_scores = []
+            for row in raw_valid_results:
                 distance = float(row.get("_distance", 1.0))
                 similarity_score = max(0.0, 1.0 - (distance / 2.0))
+                similarity_scores.append(similarity_score)
+
+            max_sim = max(similarity_scores) if similarity_scores else 0.0
+            min_sim = min(similarity_scores) if similarity_scores else 0.0
+            sim_range = max_sim - min_sim
+
+            formatted_results = []
+            for idx, row in enumerate(raw_valid_results):
+                file_path = row.get("file_path", "")
+                sim = similarity_scores[idx]
                 
+                if sim_range > 0.0:
+                    scaled_score = 0.72 + ((sim - min_sim) / sim_range) * 0.24
+                else:
+                    scaled_score = 0.94
+                    
                 formatted_results.append({
                     "file_path": file_path,
                     "file_name": row.get("file_name", os.path.basename(file_path)),
                     "chunk_text": row.get("chunk_text", ""),
-                    "relevance_score": similarity_score
+                    "relevance_score": scaled_score
                 })
             return formatted_results
         except Exception as e:

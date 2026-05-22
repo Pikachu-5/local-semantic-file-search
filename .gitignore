@@ -45,6 +45,53 @@ htmlcov/
 
 # Model/data artifacts
 models/
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Build files
+build/
+dist/
+*.egg-info/
+
+# IDEs
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+
+# Logs
+*.log
+
+# Jupyter
+.ipynb_checkpoints/
+
+# PyInstaller
+*.spec
+
+# Testing
+.pytest_cache/
+
+# Type checking
+.mypy_cache/
+
+# Coverage
+.coverage
+htmlcov/
+
+# Model/data artifacts
+models/
 data/
 *.onnx
 *.bin
@@ -55,3 +102,6 @@ data/
 *.lance
 .lancedb/
 .fake
+
+# Private User Developer Guide
+SWIFTSEARCH_DEVELOPER_GUIDE.md

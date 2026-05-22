@@ -3,6 +3,50 @@ import threading
 from typing import List, Union
 import numpy as np
 from sentence_transformers import SentenceTransformer
+import tqdm
+import gc
+
+_current_download_callback = None
+
+class ProgressTracker:
+    """
+    Context manager to route Hugging Face Hub / sentence-transformers tqdm progress
+    updates to a thread-safe callback function.
+    """
+    def __init__(self, callback):
+        self.callback = callback
+    
+    def __enter__(self):
+        global _current_download_callback
+        _current_download_callback = self.callback
+        return self
+        
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        global _current_download_callback
+        _current_download_callback = None
+
+# Thread-safe and robust tqdm monkey-patching to intercept Hugging Face download progress
+original_tqdm = tqdm.tqdm
+
+class PatchedTQDM(original_tqdm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._callback = _current_download_callback
+        if self._callback:
+            self._callback(self.n, self.total or 100)
+
+    def update(self, n=1):
+        res = super().update(n)
+        if self._callback:
+            self._callback(self.n, self.total or 100)
+        return res
+        
+    def close(self):
+        if self._callback:
+            self._callback(self.n, self.total or 100)
+        super().close()
+
+tqdm.tqdm = PatchedTQDM
 
 # Thread-safe model cache
 _models_cache = {}
@@ -79,7 +123,20 @@ class EmbeddingEngine:
             convert_to_numpy=True,
             normalize_embeddings=True  # Cosine similarity is equivalent to dot product on normalized vectors
         )
+        
+        # Active memory reclamation to prevent RAM retention
+        gc.collect()
+        try:
+            import torch
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+            # Set thread count limit to prevent CPU core/RAM thrashing
+            torch.set_num_threads(4)
+        except Exception:
+            pass
+
         return embeddings
+
 
     def get_dimension(self, model_name: str) -> int:
         """

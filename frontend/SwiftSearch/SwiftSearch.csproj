@@ -65,11 +65,7 @@
     </PackageReference>
   </ItemGroup>
 
-  <!--
-  <ItemGroup>
-    <Protobuf Include="..\..\backend\proto\service.proto" GrpcServices="None" Link="Protos\service.proto" />
-  </ItemGroup>
-  -->
+
 
   <!--
     Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution
