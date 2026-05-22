@@ -1,3 +1,4 @@
+using System;
 using Microsoft.UI.Xaml;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -20,6 +21,28 @@ public sealed partial class MainWindow : Window
         SetTitleBar(AppTitleBar);
 
         AppWindow.SetIcon("Assets/AppIcon.ico");
+
+        // Capture and store the window handle globally for WinRT Pickers
+        App.MainWindowHandle = WinRT.Interop.WindowNative.GetWindowHandle(this);
+
+        // Start the backend gRPC daemon asynchronously
+        try
+        {
+            App.SearchService.StartDaemon();
+        }
+        catch (Exception ex)
+        {
+            try
+            {
+                string crashPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "crash_log.txt");
+                System.IO.File.WriteAllText(crashPath, $"Time: {DateTime.Now}\nException: {ex}\nStackTrace:\n{ex.StackTrace}");
+            }
+            catch { }
+            throw;
+        }
+
+        // Ensure the daemon is gracefully stopped when the window closes
+        this.Closed += (s, e) => App.SearchService.StopDaemon();
 
         // Navigate the root frame to the main page on startup.
         RootFrame.Navigate(typeof(MainPage));

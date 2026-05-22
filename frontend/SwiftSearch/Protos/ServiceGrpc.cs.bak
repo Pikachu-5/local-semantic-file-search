@@ -61,6 +61,10 @@ namespace SwiftSearch.Core.Protos {
     static readonly grpc::Marshaller<global::SwiftSearch.Core.Protos.SettingsRequest> __Marshaller_swiftsearch_SettingsRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::SwiftSearch.Core.Protos.SettingsRequest.Parser));
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     static readonly grpc::Marshaller<global::SwiftSearch.Core.Protos.SettingsResponse> __Marshaller_swiftsearch_SettingsResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::SwiftSearch.Core.Protos.SettingsResponse.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::SwiftSearch.Core.Protos.RemoveFolderRequest> __Marshaller_swiftsearch_RemoveFolderRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::SwiftSearch.Core.Protos.RemoveFolderRequest.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::SwiftSearch.Core.Protos.RemoveFolderResponse> __Marshaller_swiftsearch_RemoveFolderResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::SwiftSearch.Core.Protos.RemoveFolderResponse.Parser));
 
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     static readonly grpc::Method<global::SwiftSearch.Core.Protos.SearchRequest, global::SwiftSearch.Core.Protos.SearchResponse> __Method_SemanticSearch = new grpc::Method<global::SwiftSearch.Core.Protos.SearchRequest, global::SwiftSearch.Core.Protos.SearchResponse>(
@@ -94,10 +98,84 @@ namespace SwiftSearch.Core.Protos {
         __Marshaller_swiftsearch_SettingsRequest,
         __Marshaller_swiftsearch_SettingsResponse);
 
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Method<global::SwiftSearch.Core.Protos.RemoveFolderRequest, global::SwiftSearch.Core.Protos.RemoveFolderResponse> __Method_RemoveWatchedFolder = new grpc::Method<global::SwiftSearch.Core.Protos.RemoveFolderRequest, global::SwiftSearch.Core.Protos.RemoveFolderResponse>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "RemoveWatchedFolder",
+        __Marshaller_swiftsearch_RemoveFolderRequest,
+        __Marshaller_swiftsearch_RemoveFolderResponse);
+
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
     {
       get { return global::SwiftSearch.Core.Protos.ServiceReflection.Descriptor.Services[0]; }
+    }
+
+    /// <summary>Base class for server-side implementations of SearchEngine</summary>
+    [grpc::BindServiceMethod(typeof(SearchEngine), "BindService")]
+    public abstract partial class SearchEngineBase
+    {
+      /// <summary>
+      /// Executes a hybrid semantic and lexical search query
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::System.Threading.Tasks.Task<global::SwiftSearch.Core.Protos.SearchResponse> SemanticSearch(global::SwiftSearch.Core.Protos.SearchRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      /// Triggers background indexing of a specific directory
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::System.Threading.Tasks.Task<global::SwiftSearch.Core.Protos.IndexResponse> IndexTargetFolder(global::SwiftSearch.Core.Protos.IndexRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      /// Retrieves running status, total file counts, and vector counts
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::System.Threading.Tasks.Task<global::SwiftSearch.Core.Protos.StatusResponse> GetSystemStatus(global::SwiftSearch.Core.Protos.Empty request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      /// Updates system settings dynamically (e.g. active model, exclusions)
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::System.Threading.Tasks.Task<global::SwiftSearch.Core.Protos.SettingsResponse> UpdateSettings(global::SwiftSearch.Core.Protos.SettingsRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      /// Removes a folder from the watched list and stops active watchdog monitoring
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::System.Threading.Tasks.Task<global::SwiftSearch.Core.Protos.RemoveFolderResponse> RemoveWatchedFolder(global::SwiftSearch.Core.Protos.RemoveFolderRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
     }
 
     /// <summary>Client for SearchEngine</summary>
@@ -319,12 +397,87 @@ namespace SwiftSearch.Core.Protos {
       {
         return CallInvoker.AsyncUnaryCall(__Method_UpdateSettings, null, options, request);
       }
+      /// <summary>
+      /// Removes a folder from the watched list and stops active watchdog monitoring
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::SwiftSearch.Core.Protos.RemoveFolderResponse RemoveWatchedFolder(global::SwiftSearch.Core.Protos.RemoveFolderRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return RemoveWatchedFolder(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// Removes a folder from the watched list and stops active watchdog monitoring
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::SwiftSearch.Core.Protos.RemoveFolderResponse RemoveWatchedFolder(global::SwiftSearch.Core.Protos.RemoveFolderRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_RemoveWatchedFolder, null, options, request);
+      }
+      /// <summary>
+      /// Removes a folder from the watched list and stops active watchdog monitoring
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::SwiftSearch.Core.Protos.RemoveFolderResponse> RemoveWatchedFolderAsync(global::SwiftSearch.Core.Protos.RemoveFolderRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return RemoveWatchedFolderAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// Removes a folder from the watched list and stops active watchdog monitoring
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::SwiftSearch.Core.Protos.RemoveFolderResponse> RemoveWatchedFolderAsync(global::SwiftSearch.Core.Protos.RemoveFolderRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_RemoveWatchedFolder, null, options, request);
+      }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
       protected override SearchEngineClient NewInstance(ClientBaseConfiguration configuration)
       {
         return new SearchEngineClient(configuration);
       }
+    }
+
+    /// <summary>Creates service definition that can be registered with a server</summary>
+    /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    public static grpc::ServerServiceDefinition BindService(SearchEngineBase serviceImpl)
+    {
+      return grpc::ServerServiceDefinition.CreateBuilder()
+          .AddMethod(__Method_SemanticSearch, serviceImpl.SemanticSearch)
+          .AddMethod(__Method_IndexTargetFolder, serviceImpl.IndexTargetFolder)
+          .AddMethod(__Method_GetSystemStatus, serviceImpl.GetSystemStatus)
+          .AddMethod(__Method_UpdateSettings, serviceImpl.UpdateSettings)
+          .AddMethod(__Method_RemoveWatchedFolder, serviceImpl.RemoveWatchedFolder).Build();
+    }
+
+    /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the service binding logic.
+    /// Note: this method is part of an experimental API that can change or be removed without any prior notice.</summary>
+    /// <param name="serviceBinder">Service methods will be bound by calling <c>AddMethod</c> on this object.</param>
+    /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    public static void BindService(grpc::ServiceBinderBase serviceBinder, SearchEngineBase serviceImpl)
+    {
+      serviceBinder.AddMethod(__Method_SemanticSearch, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::SwiftSearch.Core.Protos.SearchRequest, global::SwiftSearch.Core.Protos.SearchResponse>(serviceImpl.SemanticSearch));
+      serviceBinder.AddMethod(__Method_IndexTargetFolder, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::SwiftSearch.Core.Protos.IndexRequest, global::SwiftSearch.Core.Protos.IndexResponse>(serviceImpl.IndexTargetFolder));
+      serviceBinder.AddMethod(__Method_GetSystemStatus, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::SwiftSearch.Core.Protos.Empty, global::SwiftSearch.Core.Protos.StatusResponse>(serviceImpl.GetSystemStatus));
+      serviceBinder.AddMethod(__Method_UpdateSettings, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::SwiftSearch.Core.Protos.SettingsRequest, global::SwiftSearch.Core.Protos.SettingsResponse>(serviceImpl.UpdateSettings));
+      serviceBinder.AddMethod(__Method_RemoveWatchedFolder, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::SwiftSearch.Core.Protos.RemoveFolderRequest, global::SwiftSearch.Core.Protos.RemoveFolderResponse>(serviceImpl.RemoveWatchedFolder));
     }
 
   }

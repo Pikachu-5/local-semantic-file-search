@@ -40,15 +40,19 @@ namespace SwiftSearch.Core.Protos {
             "c3NhZ2UYAiABKAkiBwoFRW1wdHkikAEKDlN0YXR1c1Jlc3BvbnNlEhsKE3Rv",
             "dGFsX2luZGV4ZWRfZmlsZXMYASABKAUSFQoNdG90YWxfdmVjdG9ycxgCIAEo",
             "BRIbChNpc193YXRjaGRvZ19ydW5uaW5nGAMgASgIEhQKDGFjdGl2ZV9tb2Rl",
-            "bBgEIAEoCRIXCg93YXRjaGVkX2ZvbGRlcnMYBSADKAkyuAIKDFNlYXJjaEVu",
-            "Z2luZRJJCg5TZW1hbnRpY1NlYXJjaBIaLnN3aWZ0c2VhcmNoLlNlYXJjaFJl",
-            "cXVlc3QaGy5zd2lmdHNlYXJjaC5TZWFyY2hSZXNwb25zZRJKChFJbmRleFRh",
-            "cmdldEZvbGRlchIZLnN3aWZ0c2VhcmNoLkluZGV4UmVxdWVzdBoaLnN3aWZ0",
-            "c2VhcmNoLkluZGV4UmVzcG9uc2USQgoPR2V0U3lzdGVtU3RhdHVzEhIuc3dp",
-            "ZnRzZWFyY2guRW1wdHkaGy5zd2lmdHNlYXJjaC5TdGF0dXNSZXNwb25zZRJN",
-            "Cg5VcGRhdGVTZXR0aW5ncxIcLnN3aWZ0c2VhcmNoLlNldHRpbmdzUmVxdWVz",
-            "dBodLnN3aWZ0c2VhcmNoLlNldHRpbmdzUmVzcG9uc2VCGqoCF1N3aWZ0U2Vh",
-            "cmNoLkNvcmUuUHJvdG9zYgZwcm90bzM="));
+            "bBgEIAEoCRIXCg93YXRjaGVkX2ZvbGRlcnMYBSADKAkiKgoTUmVtb3ZlRm9s",
+            "ZGVyUmVxdWVzdBITCgtmb2xkZXJfcGF0aBgBIAEoCSI+ChRSZW1vdmVGb2xk",
+            "ZXJSZXNwb25zZRIPCgdzdWNjZXNzGAEgASgIEhUKDWVycm9yX21lc3NhZ2UY",
+            "AiABKAkylAMKDFNlYXJjaEVuZ2luZRJJCg5TZW1hbnRpY1NlYXJjaBIaLnN3",
+            "aWZ0c2VhcmNoLlNlYXJjaFJlcXVlc3QaGy5zd2lmdHNlYXJjaC5TZWFyY2hS",
+            "ZXNwb25zZRJKChFJbmRleFRhcmdldEZvbGRlchIZLnN3aWZ0c2VhcmNoLklu",
+            "ZGV4UmVxdWVzdBoaLnN3aWZ0c2VhcmNoLkluZGV4UmVzcG9uc2USQgoPR2V0",
+            "U3lzdGVtU3RhdHVzEhIuc3dpZnRzZWFyY2guRW1wdHkaGy5zd2lmdHNlYXJj",
+            "aC5TdGF0dXNSZXNwb25zZRJNCg5VcGRhdGVTZXR0aW5ncxIcLnN3aWZ0c2Vh",
+            "cmNoLlNldHRpbmdzUmVxdWVzdBodLnN3aWZ0c2VhcmNoLlNldHRpbmdzUmVz",
+            "cG9uc2USWgoTUmVtb3ZlV2F0Y2hlZEZvbGRlchIgLnN3aWZ0c2VhcmNoLlJl",
+            "bW92ZUZvbGRlclJlcXVlc3QaIS5zd2lmdHNlYXJjaC5SZW1vdmVGb2xkZXJS",
+            "ZXNwb25zZUIaqgIXU3dpZnRTZWFyY2guQ29yZS5Qcm90b3NiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -60,7 +64,9 @@ namespace SwiftSearch.Core.Protos {
             new pbr::GeneratedClrTypeInfo(typeof(global::SwiftSearch.Core.Protos.SettingsRequest), global::SwiftSearch.Core.Protos.SettingsRequest.Parser, new[]{ "ActiveModel", "ExcludedDirs", "IncludedExtensions" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::SwiftSearch.Core.Protos.SettingsResponse), global::SwiftSearch.Core.Protos.SettingsResponse.Parser, new[]{ "Success", "ErrorMessage" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::SwiftSearch.Core.Protos.Empty), global::SwiftSearch.Core.Protos.Empty.Parser, null, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::SwiftSearch.Core.Protos.StatusResponse), global::SwiftSearch.Core.Protos.StatusResponse.Parser, new[]{ "TotalIndexedFiles", "TotalVectors", "IsWatchdogRunning", "ActiveModel", "WatchedFolders" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::SwiftSearch.Core.Protos.StatusResponse), global::SwiftSearch.Core.Protos.StatusResponse.Parser, new[]{ "TotalIndexedFiles", "TotalVectors", "IsWatchdogRunning", "ActiveModel", "WatchedFolders" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::SwiftSearch.Core.Protos.RemoveFolderRequest), global::SwiftSearch.Core.Protos.RemoveFolderRequest.Parser, new[]{ "FolderPath" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::SwiftSearch.Core.Protos.RemoveFolderResponse), global::SwiftSearch.Core.Protos.RemoveFolderResponse.Parser, new[]{ "Success", "ErrorMessage" }, null, null, null, null)
           }));
     }
     #endregion
@@ -2317,6 +2323,423 @@ namespace SwiftSearch.Core.Protos {
           }
           case 42: {
             watchedFolders_.AddEntriesFrom(ref input, _repeated_watchedFolders_codec);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class RemoveFolderRequest : pb::IMessage<RemoveFolderRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<RemoveFolderRequest> _parser = new pb::MessageParser<RemoveFolderRequest>(() => new RemoveFolderRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<RemoveFolderRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::SwiftSearch.Core.Protos.ServiceReflection.Descriptor.MessageTypes[9]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public RemoveFolderRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public RemoveFolderRequest(RemoveFolderRequest other) : this() {
+      folderPath_ = other.folderPath_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public RemoveFolderRequest Clone() {
+      return new RemoveFolderRequest(this);
+    }
+
+    /// <summary>Field number for the "folder_path" field.</summary>
+    public const int FolderPathFieldNumber = 1;
+    private string folderPath_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string FolderPath {
+      get { return folderPath_; }
+      set {
+        folderPath_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as RemoveFolderRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(RemoveFolderRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (FolderPath != other.FolderPath) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (FolderPath.Length != 0) hash ^= FolderPath.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (FolderPath.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(FolderPath);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (FolderPath.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(FolderPath);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (FolderPath.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(FolderPath);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(RemoveFolderRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.FolderPath.Length != 0) {
+        FolderPath = other.FolderPath;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            FolderPath = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            FolderPath = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class RemoveFolderResponse : pb::IMessage<RemoveFolderResponse>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<RemoveFolderResponse> _parser = new pb::MessageParser<RemoveFolderResponse>(() => new RemoveFolderResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<RemoveFolderResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::SwiftSearch.Core.Protos.ServiceReflection.Descriptor.MessageTypes[10]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public RemoveFolderResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public RemoveFolderResponse(RemoveFolderResponse other) : this() {
+      success_ = other.success_;
+      errorMessage_ = other.errorMessage_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public RemoveFolderResponse Clone() {
+      return new RemoveFolderResponse(this);
+    }
+
+    /// <summary>Field number for the "success" field.</summary>
+    public const int SuccessFieldNumber = 1;
+    private bool success_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Success {
+      get { return success_; }
+      set {
+        success_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "error_message" field.</summary>
+    public const int ErrorMessageFieldNumber = 2;
+    private string errorMessage_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ErrorMessage {
+      get { return errorMessage_; }
+      set {
+        errorMessage_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as RemoveFolderResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(RemoveFolderResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Success != other.Success) return false;
+      if (ErrorMessage != other.ErrorMessage) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Success != false) hash ^= Success.GetHashCode();
+      if (ErrorMessage.Length != 0) hash ^= ErrorMessage.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (ErrorMessage.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(ErrorMessage);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Success != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (ErrorMessage.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(ErrorMessage);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Success != false) {
+        size += 1 + 1;
+      }
+      if (ErrorMessage.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ErrorMessage);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(RemoveFolderResponse other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Success != false) {
+        Success = other.Success;
+      }
+      if (other.ErrorMessage.Length != 0) {
+        ErrorMessage = other.ErrorMessage;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 18: {
+            ErrorMessage = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 18: {
+            ErrorMessage = input.ReadString();
             break;
           }
         }

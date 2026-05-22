@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="SwiftSearch.Views.SearchView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:SwiftSearch.Models"
+    xmlns:converters="using:SwiftSearch.Core.Converters"
+    mc:Ignorable="d"
+    Background="Transparent">
+
+    <Page.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <converters:InverseBooleanToVisibilityConverter x:Key="InvBoolToVis" />
+        <converters:BooleanToInverseConverter x:Key="BoolToInv" />
+
+        <SolidColorBrush x:Key="AccentBrush" Color="{ThemeResource SystemAccentColor}" />
+        <SolidColorBrush x:Key="AccentLight2Brush" Color="{ThemeResource SystemAccentColorLight2}" />
+
+        <Style x:Key="ResultCardStyle" TargetType="Grid">
+            <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
+            <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="16" />
+        </Style>
+    </Page.Resources>
+
+    <Grid Margin="24,12,24,24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header Section -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,16">
+            <TextBlock Text="Local Semantic Search" 
+                       FontSize="28" 
+                       FontWeight="SemiBold"
+                       FontFamily="Segoe UI Variable Display"
+                       Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
+            <TextBlock Text="Search files conceptually using local vector embedding models" 
+                       FontSize="14" 
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+        </StackPanel>
+
+        <!-- Search Bar and Latency Info -->
+        <StackPanel Grid.Row="1" Spacing="8" Margin="0,0,0,16">
+            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto">
+                <TextBox x:Name="SearchBox"
+                         Grid.Column="0"
+                         PlaceholderText="Search for conceptual terms (e.g. 'ai engine configuration' or 'database indices')..."
+                         Text="{Binding SearchQuery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         KeyDown="SearchBox_KeyDown"
+                         Height="42"
+                         FontSize="15"
+                         VerticalContentAlignment="Center"
+                         CornerRadius="6,0,0,6"
+                         IsEnabled="{Binding IsDownloadingModel, Converter={StaticResource BoolToInv}}" />
+                
+                <Button Grid.Column="1"
+                        Click="SearchButton_Click"
+                        Height="42"
+                        Width="80"
+                        Background="{StaticResource AccentBrush}"
+                        Foreground="White"
+                        CornerRadius="0,6,6,0"
+                        IsEnabled="{Binding IsDownloadingModel, Converter={StaticResource BoolToInv}}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <FontIcon Glyph="&#xE71E;" FontSize="14" />
+                        <TextBlock Text="Search" FontWeight="SemiBold" />
+                    </StackPanel>
+                </Button>
+            </Grid>
+
+            <!-- Metrics bar -->
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Grid.Column="0"
+                           Text="{Binding QueryMetrics}"
+                           FontSize="12.5"
+                           FontStyle="Italic"
+                           Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                           VerticalAlignment="Center" />
+
+                <ProgressRing Grid.Column="1"
+                              IsActive="{Binding IsLoading}"
+                              Width="18"
+                              Height="18"
+                              VerticalAlignment="Center" />
+            </Grid>
+        </StackPanel>
+
+        <!-- Results Pane -->
+        <Grid Grid.Row="2">
+            <!-- Offline state -->
+            <StackPanel Visibility="{Binding IsDaemonOnline, Converter={StaticResource InvBoolToVis}}"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Spacing="12">
+                <FontIcon Glyph="&#xF13C;" FontSize="48" Foreground="{ThemeResource SystemFillColorDangerBrush}" />
+                <TextBlock Text="Semantic Engine is Offline" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" />
+                <TextBlock Text="Waiting for python daemon starting on loopback port..." FontSize="13.5" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center" />
+            </StackPanel>
+
+            <!-- Online State Content -->
+            <Grid Visibility="{Binding IsDaemonOnline, Converter={StaticResource BoolToVis}}">
+                <!-- Empty State -->
+                <StackPanel Visibility="{Binding SearchResults.Count, Converter={StaticResource InvBoolToVis}}"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Spacing="12"
+                            Margin="0,40,0,0">
+                    <FontIcon Glyph="&#xE11A;" FontSize="48" Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
+                    <TextBlock Text="No items match your query" FontSize="16" FontWeight="SemiBold" HorizontalAlignment="Center" />
+                    <TextBlock Text="Type your search query and press Enter. Make sure watched folders are added in Settings." FontSize="13" Foreground="{ThemeResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center" MaxWidth="360" TextAlignment="Center" />
+                </StackPanel>
+
+                <!-- Search Results List -->
+                <ListView ItemsSource="{Binding SearchResults}"
+                          SelectionMode="None"
+                          IsItemClickEnabled="False">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="models:SearchItem">
+                            <Grid Style="{StaticResource ResultCardStyle}" 
+                                  Margin="0,4,0,8"
+                                  PointerPressed="OnResultCardClick"
+                                  PointerEntered="OnResultCardPointerEntered"
+                                  PointerExited="OnResultCardPointerExited"
+                                  Cursor="Hand">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <!-- Title and Score Block -->
+                                <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,8">
+                                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                        <FontIcon Glyph="{Binding FriendlyIcon}" FontSize="18" Foreground="{StaticResource AccentBrush}" />
+                                        <TextBlock Text="{Binding FileName}" FontSize="16" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                    
+                                    <Border Grid.Column="1" 
+                                            Background="{StaticResource AccentLight2Brush}" 
+                                            CornerRadius="4" 
+                                            Padding="6,2,6,2" 
+                                            VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding RelevancePercentage}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" />
+                                    </Border>
+                                </Grid>
+
+                                <!-- Folder Info -->
+                                <TextBlock Grid.Row="1" 
+                                           Text="{Binding ShortPath}" 
+                                           FontSize="12" 
+                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" 
+                                           Margin="0,0,0,8" 
+                                           TextTrimming="CharacterEllipsis" />
+
+                                <!-- Text Snippet preview -->
+                                <Border Grid.Row="2"
+                                        Background="{ThemeResource ControlFillColorDefaultBrush}"
+                                        BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="4"
+                                        Padding="10,8,10,8">
+                                    <TextBlock Text="{Binding ChunkText}" 
+                                               FontSize="13.5" 
+                                               LineHeight="20"
+                                               Foreground="{ThemeResource TextFillColorPrimaryBrush}" 
+                                               TextWrapping="Wrap" />
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </Grid>
+
+        <!-- Downloading Embedding Engine Overlay -->
+        <Grid Grid.Row="0" Grid.RowSpan="3"
+              Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
+              Opacity="0.95"
+              Visibility="{Binding IsDownloadingModel, Converter={StaticResource BoolToVis}}"
+              CornerRadius="8"
+              Margin="-12">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="20">
+                <ProgressRing IsActive="True" Width="60" Height="60" />
+                <TextBlock Text="Downloading Embedding Engine..." 
+                           FontSize="20" 
+                           FontWeight="SemiBold" 
+                           HorizontalAlignment="Center" />
+                <TextBlock Text="BGE-Small is a 130MB local deep-learning model cached for 100% offline searches. This only happens once." 
+                           FontSize="13" 
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" 
+                           HorizontalAlignment="Center" 
+                           MaxWidth="340" 
+                           TextAlignment="Center" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Page>

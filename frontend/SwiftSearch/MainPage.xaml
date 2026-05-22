@@ -6,13 +6,56 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:SwiftSearch"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    Background="Transparent">
 
-    <!--
-        This is the main content area of your application.
-        Add your UI elements here — for example, controls, layouts, and data-bound views.
-        Use 'dotnet new winui-page' to create additional pages and navigate to them via
-        the Frame in MainWindow (RootFrame).
-    -->
-    <Grid />
+    <Grid>
+        <NavigationView x:Name="MainNavView"
+                        PaneDisplayMode="Left"
+                        IsBackButtonVisible="Collapsed"
+                        IsSettingsVisible="False"
+                        ItemInvoked="MainNavView_ItemInvoked"
+                        Loaded="MainNavView_Loaded"
+                        Header="Search Dashboard">
+            
+            <NavigationView.MenuItems>
+                <NavigationViewItem x:Name="SearchItem" 
+                                    Content="Search Dashboard" 
+                                    Tag="Search" 
+                                    Icon="Find" />
+                <NavigationViewItem x:Name="SettingsItem" 
+                                    Content="Settings Manager" 
+                                    Tag="Settings" 
+                                    Icon="Setting" />
+            </NavigationView.MenuItems>
+
+            <NavigationView.FooterMenuItems>
+                <!-- Glowing status widget in the sidebar pane -->
+                <NavigationViewItem x:Name="StatusItem" SelectsOnInvoked="False" IsEnabled="True">
+                    <NavigationViewItem.Content>
+                        <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                            <Grid Width="12" Height="12">
+                                <Ellipse x:Name="StatusGlow" 
+                                         Fill="#FF3B30" 
+                                         Width="12" Height="12" 
+                                         Opacity="0.8" />
+                                <Ellipse x:Name="StatusCore" 
+                                         Fill="#FF3B30" 
+                                         Width="8" Height="8" 
+                                         HorizontalAlignment="Center" 
+                                         VerticalAlignment="Center" />
+                            </Grid>
+                            <TextBlock x:Name="StatusText" 
+                                       Text="Daemon: Offline" 
+                                       FontSize="12" 
+                                       VerticalAlignment="Center"
+                                       Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"/>
+                        </StackPanel>
+                    </NavigationViewItem.Content>
+                </NavigationViewItem>
+            </NavigationView.FooterMenuItems>
+
+            <Frame x:Name="ContentFrame" />
+        </NavigationView>
+    </Grid>
 </Page>

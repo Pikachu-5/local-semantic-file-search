@@ -1,3 +1,4 @@
+using System;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
@@ -21,6 +22,8 @@ namespace SwiftSearch;
 /// </summary>
 public partial class App : Application
 {
+    public static IntPtr MainWindowHandle { get; set; } = IntPtr.Zero;
+    public static Services.ISearchService SearchService { get; } = new Services.SearchService();
     private Window? _window;
     
     /// <summary>
@@ -30,6 +33,15 @@ public partial class App : Application
     public App()
     {
         InitializeComponent();
+        this.UnhandledException += (sender, e) =>
+        {
+            try
+            {
+                string crashPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "crash_log.txt");
+                System.IO.File.WriteAllText(crashPath, $"UnhandledException at {DateTime.Now}:\n{e.Exception}\nMessage: {e.Message}\nStackTrace:\n{e.Exception?.StackTrace}");
+            }
+            catch { }
+        };
     }
 
     /// <summary>

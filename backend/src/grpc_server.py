@@ -72,6 +72,24 @@ class SearchEngineServicer(service_pb2_grpc.SearchEngineServicer):
         
         try:
             print(f"[*] Received IndexTargetFolder request: path='{folder_path}', auto_watch={auto_watch}")
+            
+            if folder_path.startswith("REMOVE:"):
+                target_folder = folder_path[len("REMOVE:"):].strip()
+                abs_folder = os.path.abspath(target_folder)
+                print(f"[*] Unwatching folder: {abs_folder}")
+                
+                # 1. Remove from persistent config
+                self.config.remove_watched_folder(abs_folder)
+                
+                # 2. Unschedule from directory watcher
+                self.watcher.unwatch_folder(abs_folder)
+                
+                return service_pb2.IndexResponse(
+                    success=True,
+                    files_processed=0,
+                    chunks_created=0
+                )
+
             abs_folder = os.path.abspath(folder_path)
             if not os.path.exists(abs_folder):
                 return service_pb2.IndexResponse(
@@ -147,7 +165,7 @@ class SearchEngineServicer(service_pb2_grpc.SearchEngineServicer):
             )
 
 
-def serve(port: str = "50051") -> None:
+def serve(port: str = "0") -> None:
     """
     Spins up the gRPC listener bound exclusively to loopback 127.0.0.1.
     """
@@ -169,9 +187,11 @@ def serve(port: str = "50051") -> None:
     
     # Bind to localhost exclusively to prevent firewall popups
     address = f"127.0.0.1:{port}"
-    server.add_insecure_port(address)
+    bound_port = server.add_insecure_port(address)
     
-    print(f"[+] SwiftSearch daemon listening securely on {address}...")
+    print(f"[+] SwiftSearch daemon listening securely on 127.0.0.1:{bound_port}...")
+    print(f"GRPC_READY:{bound_port}", flush=True)
+    sys.stdout.flush()
     server.start()
     
     # Set up signal handlers for clean shut downs

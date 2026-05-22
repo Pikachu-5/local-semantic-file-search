@@ -54,11 +54,6 @@ class SearchEngineStub(object):
                 request_serializer=service__pb2.SettingsRequest.SerializeToString,
                 response_deserializer=service__pb2.SettingsResponse.FromString,
                 _registered_method=True)
-        self.RemoveWatchedFolder = channel.unary_unary(
-                '/swiftsearch.SearchEngine/RemoveWatchedFolder',
-                request_serializer=service__pb2.RemoveFolderRequest.SerializeToString,
-                response_deserializer=service__pb2.RemoveFolderResponse.FromString,
-                _registered_method=True)
 
 
 class SearchEngineServicer(object):
@@ -92,13 +87,6 @@ class SearchEngineServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def RemoveWatchedFolder(self, request, context):
-        """Removes a folder from the watched list and stops active watchdog monitoring
-        """
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
 
 def add_SearchEngineServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -121,11 +109,6 @@ def add_SearchEngineServicer_to_server(servicer, server):
                     servicer.UpdateSettings,
                     request_deserializer=service__pb2.SettingsRequest.FromString,
                     response_serializer=service__pb2.SettingsResponse.SerializeToString,
-            ),
-            'RemoveWatchedFolder': grpc.unary_unary_rpc_method_handler(
-                    servicer.RemoveWatchedFolder,
-                    request_deserializer=service__pb2.RemoveFolderRequest.FromString,
-                    response_serializer=service__pb2.RemoveFolderResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -236,33 +219,6 @@ class SearchEngine(object):
             '/swiftsearch.SearchEngine/UpdateSettings',
             service__pb2.SettingsRequest.SerializeToString,
             service__pb2.SettingsResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
-
-    @staticmethod
-    def RemoveWatchedFolder(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/swiftsearch.SearchEngine/RemoveWatchedFolder',
-            service__pb2.RemoveFolderRequest.SerializeToString,
-            service__pb2.RemoveFolderResponse.FromString,
             options,
             channel_credentials,
             insecure,
