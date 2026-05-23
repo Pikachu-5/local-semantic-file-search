@@ -1,8 +1,74 @@
+# ====================================================================
+# SwiftSearch Consolidated Git Ignore File
+# Covers WinUI 3 (C#/.NET 9), Python 3.12, LanceDB, and Everything SDK
+# ====================================================================
+
+
+# --------------------------------------------------------------------
+# C# / .NET / Visual Studio (WinUI 3 Frontend)
+# --------------------------------------------------------------------
+# Build outputs
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+
+# Visual Studio files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+artifacts/
+Generated\ Files/
+*_wpftmp.csproj
+
+# Build logs
+[Ll]og/
+[Ll]ogs/
+*.log
+*.binlog
+
+# Test results
+[Tt]est[Rr]esult*/
+*.trx
+*.coverage
+*.coveragexml
+
+# NuGet
+*.nupkg
+*.snupkg
+*.nuget.props
+*.nuget.targets
+project.lock.json
+
+# MSIX packaging output
+AppPackages/
+BundleArtifacts/
+*.msix
+*.msixupload
+*.appx
+*.appxbundle
+*.appxupload
+
+# Publish output
+publish/
+*.pubxml
+PublishScripts/
+
+# Code analysis and tooling
+_ReSharper*/
+*.DotSettings.user
+*.dotCover
+
+# --------------------------------------------------------------------
+# Python (Backend Daemon)
+# --------------------------------------------------------------------
 # Virtual environments
 .venv/
 venv/
 env/
-Everything-SDK/
+
 # Python cache
 __pycache__/
 *.py[cod]
@@ -13,86 +79,24 @@ build/
 dist/
 *.egg-info/
 
-# IDEs
-.vscode/
-.idea/
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# Environment variables
-.env
-
-# Logs
-*.log
-
-# Jupyter
-.ipynb_checkpoints/
-
 # PyInstaller
 *.spec
 
 # Testing
 .pytest_cache/
-
-# Type checking
 .mypy_cache/
-
-# Coverage
 .coverage
 htmlcov/
-
-# Model/data artifacts
-models/
-# Virtual environments
-.venv/
-venv/
-env/
-
-# Python cache
-__pycache__/
-*.py[cod]
-*$py.class
-
-# Build files
-build/
-dist/
-*.egg-info/
-
-# IDEs
-.vscode/
-.idea/
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# Environment variables
-.env
-
-# Logs
-*.log
 
 # Jupyter
 .ipynb_checkpoints/
 
-# PyInstaller
-*.spec
-
-# Testing
-.pytest_cache/
-
-# Type checking
-.mypy_cache/
-
-# Coverage
-.coverage
-htmlcov/
-
-# Model/data artifacts
-models/
-data/
+# --------------------------------------------------------------------
+# Neural Models, Databases, and Local Caches
+# --------------------------------------------------------------------
+# Anchor models folder to root to prevent case-insensitive collisions with C# 'Models' folder
+/models/
+/data/
 *.onnx
 *.bin
 *.pt
@@ -103,5 +107,20 @@ data/
 .lancedb/
 .fake
 
-# Private User Developer Guide
+# --------------------------------------------------------------------
+# OS & Environment Files
+# --------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+.env
+
+# --------------------------------------------------------------------
+# IDEs & Editors
+# --------------------------------------------------------------------
+.vscode/
+.idea/
+
+# --------------------------------------------------------------------
+# Private User Guides / Manuals
+# --------------------------------------------------------------------
 SWIFTSEARCH_DEVELOPER_GUIDE.md
