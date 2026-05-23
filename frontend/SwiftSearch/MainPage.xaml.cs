@@ -10,7 +10,25 @@ namespace SwiftSearch
         {
             this.InitializeComponent();
             App.SearchService.PropertyChanged += SearchService_PropertyChanged;
+            App.DevLogsSettingChanged += App_DevLogsSettingChanged;
             UpdateStatusUI();
+            UpdateSidebarVisibility();
+        }
+
+        private void App_DevLogsSettingChanged(object? sender, EventArgs e)
+        {
+            DispatcherQueue.TryEnqueue(() =>
+            {
+                UpdateSidebarVisibility();
+            });
+        }
+
+        private void UpdateSidebarVisibility()
+        {
+            if (DiagnosticsItem != null)
+            {
+                DiagnosticsItem.Visibility = App.IsDevLogsEnabled ? Visibility.Visible : Visibility.Collapsed;
+            }
         }
 
         private void SearchService_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -74,18 +92,19 @@ namespace SwiftSearch
 
         private void NavigateToTab(string tag)
         {
+            MainNavView.Header = null;
             switch (tag)
             {
                 case "Search":
-                    MainNavView.Header = "Search Dashboard";
                     ContentFrame.Navigate(typeof(Views.SearchView));
                     break;
+                case "GlobalSearch":
+                    ContentFrame.Navigate(typeof(Views.GlobalSearchView));
+                    break;
                 case "Settings":
-                    MainNavView.Header = "Settings Manager";
                     ContentFrame.Navigate(typeof(Views.SettingsView));
                     break;
                 case "Diagnostics":
-                    MainNavView.Header = "System Debugger & Diagnostics";
                     ContentFrame.Navigate(typeof(Views.DiagnosticsView));
                     break;
             }

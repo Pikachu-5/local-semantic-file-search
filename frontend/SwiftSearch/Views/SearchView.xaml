@@ -8,6 +8,10 @@
     xmlns:local="using:SwiftSearch.Views"
     mc:Ignorable="d"
     Background="Transparent">
+    
+    <Page.Resources>
+        <ThemeShadow x:Name="SharedShadow" />
+    </Page.Resources>
 
     <Grid Margin="24">
         <Grid.RowDefinitions>
@@ -17,14 +21,42 @@
         </Grid.RowDefinitions>
 
         <!-- Page Header -->
-        <StackPanel Grid.Row="0" Margin="0,0,0,16">
-            <TextBlock Text="Semantic Discovery" 
-                       Style="{ThemeResource TitleTextBlockStyle}" 
-                       FontWeight="SemiBold" />
-            <TextBlock Text="Locate your files conceptually with zero cloud dependencies" 
-                       Style="{ThemeResource BodyTextBlockStyle}" 
-                       Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" />
-        </StackPanel>
+        <Grid Grid.Row="0" Margin="0,0,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Semantic Discovery" 
+                           Style="{ThemeResource SubtitleTextBlockStyle}" 
+                           FontWeight="SemiBold" />
+                <TextBlock Text="Locate your files conceptually with zero cloud dependencies" 
+                           Style="{ThemeResource BodyTextBlockStyle}" 
+                           Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" />
+            </StackPanel>
+            
+            <!-- Quick Memory Controls in Header -->
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Spacing="12">
+                <Border x:Name="ModelMemoryBadge" 
+                        Background="{ThemeResource SystemFillColorSolidNeutralBackgroundBrush}" 
+                        CornerRadius="12" 
+                        Padding="12,6,12,6" 
+                        BorderThickness="1" 
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <Ellipse x:Name="ModelMemoryIndicator" Width="8" Height="8" Fill="#FFAAAAAA" VerticalAlignment="Center" />
+                        <TextBlock x:Name="ModelMemoryStatusText" Text="RAM Offline" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Border>
+                <Button x:Name="QuickLoadUnloadButton" 
+                        Content="Load AI to RAM" 
+                        Style="{ThemeResource DefaultButtonStyle}"
+                        CornerRadius="6"
+                        Click="QuickLoadUnloadButton_Click"
+                        VerticalAlignment="Center" />
+            </StackPanel>
+        </Grid>
 
         <!-- Search Bar and Settings Row -->
         <Grid Grid.Row="1" Margin="0,0,0,16">
@@ -37,36 +69,57 @@
             <!-- Search input with glowing shadow border -->
             <TextBox x:Name="SearchTextBox" 
                      Grid.Column="0" 
-                     PlaceholderText="Enter your query... (e.g., 'artificial intelligence notes')" 
-                     Height="42" 
+                     PlaceholderText="Find a File" 
+                     Height="54" 
+                     FontSize="16"
                      VerticalContentAlignment="Center"
                      CornerRadius="8"
-                     Padding="12,0,12,0"
-                     KeyDown="SearchTextBox_KeyDown" />
+                     Padding="48,14,16,14"
+                     Shadow="{StaticResource SharedShadow}"
+                     Translation="0,0,8"
+                     KeyDown="SearchTextBox_KeyDown">
+                <TextBox.Resources>
+                    <SolidColorBrush x:Key="TextControlBorderBrushFocused" Color="#FF34C759" />
+                </TextBox.Resources>
+            </TextBox>
 
-            <!-- Results Count (Top K) -->
-            <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
-                <TextBlock Text="Top results:" VerticalAlignment="Center" Margin="0,0,8,0" />
-                <Slider x:Name="TopKSlider" 
-                        Width="100" 
-                        Minimum="5" 
-                        Maximum="50" 
-                        Value="10" 
-                        TickFrequency="5"
-                        SnapsTo="Ticks"
-                        Header=""
-                        VerticalAlignment="Center" />
-            </StackPanel>
+            <!-- Injected Magnifying Glass Icon -->
+            <FontIcon Glyph="&#xE721;" 
+                      Grid.Column="0"
+                      FontFamily="Segoe MDL2 Assets" 
+                      FontSize="18" 
+                      Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Center"
+                      Margin="16,0,0,0"
+                      IsHitTestVisible="False" />
 
+            <!-- Search Button adjacent to text input -->
             <Button x:Name="SearchButton" 
-                    Grid.Column="2" 
+                    Grid.Column="1" 
                     Content="Search" 
                     Style="{ThemeResource AccentButtonStyle}" 
-                    Height="42" 
+                    Height="54" 
                     Width="90" 
                     Margin="16,0,0,0"
                     CornerRadius="8"
                     Click="SearchButton_Click" />
+
+            <!-- Results Count (Top K) on the far right -->
+            <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="24,0,0,0" VerticalAlignment="Center">
+                <TextBlock Text="Top results:" VerticalAlignment="Center" Margin="0,0,8,0" />
+                <ComboBox x:Name="TopKComboBox" 
+                          Width="80" 
+                          CornerRadius="6"
+                          SelectedIndex="0"
+                          VerticalAlignment="Center">
+                    <ComboBoxItem Content="10" Tag="10"/>
+                    <ComboBoxItem Content="20" Tag="20"/>
+                    <ComboBoxItem Content="30" Tag="30"/>
+                    <ComboBoxItem Content="50" Tag="50"/>
+                    <ComboBoxItem Content="100" Tag="100"/>
+                </ComboBox>
+            </StackPanel>
         </Grid>
 
         <!-- Main Workspace (Results Area / Loading spinner) -->
@@ -81,7 +134,7 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Instant Matches (NTFS Index)" 
+                            <TextBlock Text="Quick Results" 
                                        Style="{ThemeResource SubtitleTextBlockStyle}" 
                                        FontWeight="SemiBold" />
                             <Border Grid.Column="1" Background="{ThemeResource AccentAAFillColorDefaultBrush}" CornerRadius="4" Padding="6,2,6,2" VerticalAlignment="Center">
@@ -99,20 +152,20 @@
                                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                                     <Setter Property="Margin" Value="0,0,0,8" />
                                     <Setter Property="Padding" Value="0" />
+                                    <Setter Property="CornerRadius" Value="6" />
                                 </Style>
                             </ListView.ItemContainerStyle>
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                    <Border BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
-                                            BorderThickness="1" 
-                                            CornerRadius="6" 
-                                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                                            Padding="12,8,12,8">
+                                    <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="6"
+                                            Padding="16,14,16,14">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto" />
                                                 <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="Auto" />
                                             </Grid.ColumnDefinitions>
                                             <FontIcon Glyph="{Binding FileIcon}" 
                                                       FontFamily="Segoe MDL2 Assets" 
@@ -120,13 +173,10 @@
                                                       Foreground="{Binding FileIconColor}" 
                                                       VerticalAlignment="Center" 
                                                       Margin="0,0,12,0" />
-                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="4">
                                                 <TextBlock Text="{Binding FileName}" FontWeight="SemiBold" FontSize="13" />
-                                                <TextBlock Text="{Binding FilePath}" FontSize="10" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" TextTrimming="CharacterEllipsis" />
+                                                <TextBlock Text="{Binding FilePath}" FontSize="11" Foreground="#B0B0B0" TextTrimming="CharacterEllipsis" />
                                             </StackPanel>
-                                            <Border Grid.Column="2" Background="{ThemeResource AccentAAFillColorDefaultBrush}" Opacity="0.85" CornerRadius="4" Padding="6,2,6,2" VerticalAlignment="Center">
-                                                <TextBlock Text="Instant" Foreground="White" FontSize="9" FontWeight="SemiBold" />
-                                            </Border>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
@@ -145,7 +195,7 @@
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Conceptual Matches (Deep AI)" 
+                            <TextBlock Text="Content Matches" 
                                        Style="{ThemeResource SubtitleTextBlockStyle}" 
                                        FontWeight="SemiBold" />
                             
@@ -171,15 +221,16 @@
                                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                                     <Setter Property="Margin" Value="0,0,0,12" />
                                     <Setter Property="Padding" Value="0" />
+                                    <Setter Property="CornerRadius" Value="8" />
                                 </Style>
                             </ListView.ItemContainerStyle>
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                    <Border BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
-                                            BorderThickness="1" 
-                                            CornerRadius="8" 
-                                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                                            Padding="16">
+                                    <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="8"
+                                            Padding="20,16,20,16">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto" />
@@ -199,14 +250,24 @@
                                                     <RowDefinition Height="Auto" />
                                                 </Grid.RowDefinitions>
                                                 <TextBlock Text="{Binding FileName}" FontWeight="SemiBold" FontSize="15" />
-                                                <TextBlock Text="{Binding FilePath}" FontSize="11" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" Margin="0,2,0,8" Grid.Row="1" />
-                                                <TextBlock FontSize="13" 
-                                                           TextWrapping="Wrap" 
-                                                           Foreground="{ThemeResource SystemControlPageTextBaseHighBrush}"
-                                                           LineHeight="18"
-                                                           Grid.Row="2"
-                                                           local:TextHighlight.FullText="{Binding ChunkText}"
-                                                           local:TextHighlight.Query="{Binding Query}" />
+                                                <TextBlock Text="{Binding FilePath}" FontSize="11" Foreground="#B0B0B0" Margin="0,4,0,8" Grid.Row="1" />
+                                                <Border Grid.Row="2" 
+                                                        Background="#0AFFFFFF" 
+                                                        BorderBrush="#FF34C759" 
+                                                        BorderThickness="2,0,0,0" 
+                                                        CornerRadius="4" 
+                                                        Padding="12" 
+                                                        Margin="0,10,0,0" 
+                                                        HorizontalAlignment="Stretch">
+                                                    <TextBlock FontSize="13" 
+                                                               TextWrapping="Wrap" 
+                                                               MaxLines="4"
+                                                               TextTrimming="CharacterEllipsis"
+                                                               Foreground="{ThemeResource SystemControlPageTextBaseHighBrush}"
+                                                               LineHeight="18"
+                                                               local:TextHighlight.FullText="{Binding ChunkText}"
+                                                               local:TextHighlight.Query="{Binding Query}" />
+                                                </Border>
                                             </Grid>
                                             <Border Background="{ThemeResource AccentAAFillColorDefaultBrush}" 
                                                     CornerRadius="6" 

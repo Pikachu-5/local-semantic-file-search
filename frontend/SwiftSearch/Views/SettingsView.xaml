@@ -63,8 +63,9 @@
                                              IsChecked="True" 
                                              Checked="ModelRadio_Checked" />
                                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
-                                    <TextBlock x:Name="BgeDownloadedText" Text="Downloaded" Foreground="Green" FontWeight="SemiBold" VerticalAlignment="Center" Visibility="Collapsed" FontSize="12" />
+                                    <TextBlock x:Name="BgeStatusText" Text="Not Downloaded" VerticalAlignment="Center" FontSize="12" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" />
                                     <Button x:Name="BgeDownloadButton" Content="Download" Click="DownloadBgeButton_Click" CornerRadius="4" Padding="12,4,12,4" FontSize="12" />
+                                    <Button x:Name="BgeMemoryButton" Content="Load" Click="BgeMemoryButton_Click" CornerRadius="4" Padding="12,4,12,4" FontSize="12" Visibility="Collapsed" />
                                 </StackPanel>
                             </Grid>
                             <TextBlock Text="High-speed retrieval. Model size ~130MB. Perfect for standard laptops." 
@@ -83,8 +84,9 @@
                                              GroupName="ModelEngine" 
                                              Checked="ModelRadio_Checked" />
                                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
-                                    <TextBlock x:Name="NomicDownloadedText" Text="Downloaded" Foreground="Green" FontWeight="SemiBold" VerticalAlignment="Center" Visibility="Collapsed" FontSize="12" />
+                                    <TextBlock x:Name="NomicStatusText" Text="Not Downloaded" VerticalAlignment="Center" FontSize="12" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" />
                                     <Button x:Name="NomicDownloadButton" Content="Download" Click="DownloadNomicButton_Click" CornerRadius="4" Padding="12,4,12,4" FontSize="12" />
+                                    <Button x:Name="NomicMemoryButton" Content="Load" Click="NomicMemoryButton_Click" CornerRadius="4" Padding="12,4,12,4" FontSize="12" Visibility="Collapsed" />
                                 </StackPanel>
                             </Grid>
                             <TextBlock Text="Deep semantic context. Model size ~280MB. Higher RAM usage." 
@@ -105,6 +107,74 @@
                                 </Grid>
                                 <ProgressBar x:Name="DownloadProgressBar" Value="45" Minimum="0" Maximum="100" Height="6" CornerRadius="3" />
                             </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Appearance / Theme Selector Card -->
+                    <Border BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                            BorderThickness="1" 
+                            CornerRadius="8" 
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            Padding="20">
+                        <StackPanel Spacing="12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="App Theme" FontWeight="SemiBold" FontSize="16" />
+                                    <TextBlock Text="Choose your preferred visual style." 
+                                               FontSize="12" 
+                                               Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" 
+                                               TextWrapping="Wrap" />
+                                </StackPanel>
+                                <FontIcon Glyph="&#xE706;" 
+                                          FontFamily="Segoe MDL2 Assets" 
+                                          FontSize="20" 
+                                          Grid.Column="1" 
+                                          Foreground="{ThemeResource AccentAAFillColorDefaultBrush}" 
+                                          VerticalAlignment="Center" />
+                            </Grid>
+                            
+                            <ComboBox x:Name="ThemeComboBox" 
+                                      HorizontalAlignment="Stretch" 
+                                      Margin="0,4,0,0" 
+                                      SelectionChanged="ThemeComboBox_SelectionChanged" 
+                                      CornerRadius="4">
+                                <ComboBoxItem Content="System Default" Tag="Default" />
+                                <ComboBoxItem Content="Light" Tag="Light" />
+                                <ComboBoxItem Content="Dark" Tag="Dark" />
+                            </ComboBox>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Developer Options Card -->
+                    <Border BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" 
+                            BorderThickness="1" 
+                            CornerRadius="8" 
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            Padding="20">
+                        <StackPanel Spacing="12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="Developer Logs" FontWeight="SemiBold" FontSize="16" />
+                                    <TextBlock Text="Enable deep system diagnostics and live crawler logs." 
+                                               FontSize="12" 
+                                               Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" 
+                                               TextWrapping="Wrap" />
+                                </StackPanel>
+                                <ToggleSwitch x:Name="DevLogsToggle" 
+                                              Grid.Column="1" 
+                                              Toggled="DevLogsToggle_Toggled" 
+                                              OnContent="Enabled" 
+                                              OffContent="Disabled" 
+                                              VerticalAlignment="Center" />
+                            </Grid>
                         </StackPanel>
                     </Border>
 
@@ -158,6 +228,23 @@
                                                TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,12,0" />
                                     <Button x:Name="OpenDbDirButton" Content="Open Folder" Click="OpenDbDirButton_Click" 
                                             Style="{ThemeResource DefaultButtonStyle}" Grid.Column="1" CornerRadius="4" />
+                                </Grid>
+                            </StackPanel>
+
+                            <Border Height="1" Background="{ThemeResource CardStrokeColorDefaultBrush}" Margin="0,4,0,4" />
+
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Index Actions (Danger Zone):" FontSize="13" FontWeight="SemiBold" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Completely erase all indexed vector databases and reset watched folder settings." 
+                                               FontSize="11" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" 
+                                               TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,12,0" />
+                                    <Button x:Name="DeleteVectorsButton" Content="Delete All Vectors" Click="DeleteVectorsButton_Click" 
+                                            Foreground="#FFFF453A" Style="{ThemeResource DefaultButtonStyle}" Grid.Column="1" CornerRadius="4" />
                                 </Grid>
                             </StackPanel>
                         </StackPanel>

@@ -17,6 +17,12 @@ public sealed partial class MainWindow : Window
     {
         InitializeComponent();
 
+        // Load and apply stored theme preference on boot
+        if (App.Current is App app && this.Content is FrameworkElement rootElement)
+        {
+            rootElement.RequestedTheme = app.GetCurrentTheme();
+        }
+
         ExtendsContentIntoTitleBar = true;
         SetTitleBar(AppTitleBar);
 

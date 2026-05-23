@@ -19,6 +19,7 @@ from model import EmbeddingEngine
 from hybrid import HybridSearchEngine
 from scanner import IndexScanner, DirectoryWatcher, FileSystemWatchdogHandler
 from grpc_server import SearchEngineServicer
+from everything import EverythingSearchEngine
 
 
 class TestServicesAndWatchdog(unittest.TestCase):
@@ -36,6 +37,7 @@ class TestServicesAndWatchdog(unittest.TestCase):
         cls.search_engine = HybridSearchEngine(cls.db, cls.embedder)
         cls.scanner = IndexScanner(cls.db, cls.embedder, cls.config)
         cls.watcher = DirectoryWatcher(cls.db, cls.embedder, cls.config)
+        cls.everything_engine = EverythingSearchEngine()
         
         # Speed up debouncing for testing
         cls.watcher.debounce_seconds = 0.5
@@ -46,7 +48,7 @@ class TestServicesAndWatchdog(unittest.TestCase):
         cls.server = grpc.server(futures.ThreadPoolExecutor(max_workers=2))
         cls.servicer = SearchEngineServicer(
             cls.config, cls.db, cls.embedder, 
-            cls.search_engine, cls.scanner, cls.watcher
+            cls.search_engine, cls.scanner, cls.watcher, cls.everything_engine
         )
         service_pb2_grpc.add_SearchEngineServicer_to_server(cls.servicer, cls.server)
         cls.server.add_insecure_port(f"127.0.0.1:{cls.server_port}")

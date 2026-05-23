@@ -20,11 +20,20 @@ namespace SwiftSearch.Views
             this.InitializeComponent();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        private bool _isInitialLoaded = false;
+
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             App.SearchService.PropertyChanged += SearchService_PropertyChanged;
             UpdateOverlayState();
+            UpdateMemoryStatus();
+
+            if (!_isInitialLoaded)
+            {
+                _isInitialLoaded = true;
+                await TriggerSearchAsync();
+            }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -36,11 +45,21 @@ namespace SwiftSearch.Views
         private void SearchService_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(App.SearchService.IsDownloadingModel) || 
-                e.PropertyName == nameof(App.SearchService.IsDaemonOnline))
+                e.PropertyName == nameof(App.SearchService.IsDaemonOnline) ||
+                e.PropertyName == nameof(App.SearchService.IsLoadingModel))
             {
                 DispatcherQueue.TryEnqueue(() =>
                 {
                     UpdateOverlayState();
+                    UpdateMemoryStatus();
+                });
+            }
+            else if (e.PropertyName == nameof(App.SearchService.LoadedModels) ||
+                     e.PropertyName == nameof(App.SearchService.ActiveModel))
+            {
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    UpdateMemoryStatus();
                 });
             }
         }
@@ -51,6 +70,7 @@ namespace SwiftSearch.Views
             if (!service.IsDaemonOnline)
             {
                 OverlayStatusText.Text = "Connecting to Local Search Engine...";
+                OverlaySpinner.IsActive = true;
                 OverlayPanel.Visibility = Visibility.Visible;
                 SearchTextBox.IsEnabled = false;
                 SearchButton.IsEnabled = false;
@@ -58,6 +78,15 @@ namespace SwiftSearch.Views
             else if (service.IsDownloadingModel)
             {
                 OverlayStatusText.Text = "Downloading Embedding Engine...";
+                OverlaySpinner.IsActive = true;
+                OverlayPanel.Visibility = Visibility.Visible;
+                SearchTextBox.IsEnabled = false;
+                SearchButton.IsEnabled = false;
+            }
+            else if (service.IsLoadingModel)
+            {
+                OverlayStatusText.Text = "Loading Local AI Weights...";
+                OverlaySpinner.IsActive = true;
                 OverlayPanel.Visibility = Visibility.Visible;
                 SearchTextBox.IsEnabled = false;
                 SearchButton.IsEnabled = false;
@@ -68,6 +97,56 @@ namespace SwiftSearch.Views
                 SearchTextBox.IsEnabled = true;
                 SearchButton.IsEnabled = true;
             }
+        }
+
+        private void UpdateMemoryStatus()
+        {
+            var service = App.SearchService;
+            var active = service.ActiveModel;
+            var isLoaded = service.LoadedModels.Contains(active);
+            
+            if (service.IsLoadingModel)
+            {
+                ModelMemoryIndicator.Fill = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 255, 140, 0)); // Orange
+                ModelMemoryStatusText.Text = "RAM Memory Loading...";
+                QuickLoadUnloadButton.IsEnabled = false;
+            }
+            else
+            {
+                QuickLoadUnloadButton.IsEnabled = service.IsDaemonOnline && !service.IsDownloadingModel;
+                if (isLoaded)
+                {
+                    ModelMemoryIndicator.Fill = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 46, 204, 113)); // Premium green
+                    ModelMemoryStatusText.Text = "Active (RAM Loaded)";
+                    QuickLoadUnloadButton.Content = "Unload AI RAM";
+                }
+                else
+                {
+                    ModelMemoryIndicator.Fill = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 170, 170, 170)); // Gray
+                    ModelMemoryStatusText.Text = "RAM Unloaded";
+                    QuickLoadUnloadButton.Content = "Load AI to RAM";
+                }
+            }
+        }
+
+        private async void QuickLoadUnloadButton_Click(object sender, RoutedEventArgs e)
+        {
+            var service = App.SearchService;
+            if (!service.IsDaemonOnline) return;
+            
+            var active = service.ActiveModel;
+            var isLoaded = service.LoadedModels.Contains(active);
+            
+            QuickLoadUnloadButton.IsEnabled = false;
+            if (isLoaded)
+            {
+                await service.UnloadModelFromMemoryAsync(active);
+            }
+            else
+            {
+                await service.LoadModelIntoMemoryAsync(active);
+            }
+            QuickLoadUnloadButton.IsEnabled = true;
         }
 
         private async void SearchButton_Click(object sender, RoutedEventArgs e)
@@ -86,7 +165,8 @@ namespace SwiftSearch.Views
         private async Task TriggerSearchAsync()
         {
             string query = SearchTextBox.Text.Trim();
-            if (string.IsNullOrEmpty(query)) return;
+            // If query is empty, we perform NTFS browse only
+            bool isBrowseMode = string.IsNullOrEmpty(query);
 
             SearchButton.IsEnabled = false;
             SearchTextBox.IsEnabled = false;
@@ -97,60 +177,85 @@ namespace SwiftSearch.Views
 
             EverythingSection.Visibility = Visibility.Collapsed;
             SectionSeparator.Visibility = Visibility.Collapsed;
-            SemanticSection.Visibility = Visibility.Visible;
-            SemanticProgressRing.IsActive = true;
+            SemanticSection.Visibility = isBrowseMode ? Visibility.Collapsed : Visibility.Visible;
+            SemanticProgressRing.IsActive = !isBrowseMode;
             NoResultsPanel.Visibility = Visibility.Collapsed;
             ResultsScrollViewer.Visibility = Visibility.Visible;
 
             try
             {
-                int topK = (int)TopKSlider.Value;
-
-                // Start both searches in parallel
-                var everythingTask = App.SearchService.SearchEverythingAsync(query, topK);
-                var semanticTask = App.SearchService.SearchAsync(query, topK);
-
-                // 1. Process Everything Results (usually instantaneous)
-                var everythingResults = await everythingTask;
-                bool hasEverything = everythingResults != null && everythingResults.Count > 0;
-                if (hasEverything)
+                int topK = 10;
+                if (TopKComboBox.SelectedItem is ComboBoxItem selectedItem && 
+                    int.TryParse(selectedItem.Tag?.ToString(), out var parsedTopK))
                 {
-                    EverythingListView.ItemsSource = everythingResults;
-                    EverythingSection.Visibility = Visibility.Visible;
+                    topK = parsedTopK;
+                }
+
+                if (isBrowseMode)
+                {
+                    // Instant Browse: 100 files
+                    var everythingResults = await App.SearchService.SearchEverythingAsync(string.Empty, 100);
+                    bool hasEverything = everythingResults != null && everythingResults.Count > 0;
+                    if (hasEverything)
+                    {
+                        EverythingListView.ItemsSource = everythingResults;
+                        EverythingSection.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        EverythingSection.Visibility = Visibility.Collapsed;
+                        NoResultsPanel.Visibility = Visibility.Visible;
+                    }
                 }
                 else
                 {
-                    EverythingSection.Visibility = Visibility.Collapsed;
-                }
+                    // Regular Hybrid Search: Everything + Semantic
+                    // Start both searches in parallel
+                    var everythingTask = App.SearchService.SearchEverythingAsync(query, topK);
+                    var semanticTask = App.SearchService.SearchAsync(query, topK);
 
-                // 2. Process Semantic Results (takes 300-800ms)
-                var semanticResults = await semanticTask;
-                SemanticProgressRing.IsActive = false;
-                bool hasSemantic = semanticResults != null && semanticResults.Count > 0;
-                if (hasSemantic)
-                {
-                    SemanticListView.ItemsSource = semanticResults;
-                    SemanticSection.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    SemanticSection.Visibility = Visibility.Collapsed;
-                }
+                    // 1. Process Everything Results
+                    var everythingResults = await everythingTask;
+                    bool hasEverything = everythingResults != null && everythingResults.Count > 0;
+                    if (hasEverything)
+                    {
+                        EverythingListView.ItemsSource = everythingResults;
+                        EverythingSection.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        EverythingSection.Visibility = Visibility.Collapsed;
+                    }
 
-                // 3. Manage Separator between sections
-                if (hasEverything && hasSemantic)
-                {
-                    SectionSeparator.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    SectionSeparator.Visibility = Visibility.Collapsed;
-                }
+                    // 2. Process Semantic Results
+                    var semanticResults = await semanticTask;
+                    SemanticProgressRing.IsActive = false;
+                    bool hasSemantic = semanticResults != null && semanticResults.Count > 0;
+                    if (hasSemantic)
+                    {
+                        SemanticListView.ItemsSource = semanticResults;
+                        SemanticSection.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        SemanticSection.Visibility = Visibility.Collapsed;
+                    }
 
-                // 4. Handle overall empty results state
-                if (!hasEverything && !hasSemantic)
-                {
-                    NoResultsPanel.Visibility = Visibility.Visible;
+                    // 3. Manage Separator between sections
+                    if (hasEverything && hasSemantic)
+                    {
+                        SectionSeparator.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        SectionSeparator.Visibility = Visibility.Collapsed;
+                    }
+
+                    // 4. Handle overall empty results state
+                    if (!hasEverything && !hasSemantic)
+                    {
+                        NoResultsPanel.Visibility = Visibility.Visible;
+                    }
                 }
             }
             catch (Exception ex)

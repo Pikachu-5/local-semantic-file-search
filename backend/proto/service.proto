@@ -40,6 +40,7 @@ message SearchResult {
   string file_name = 2;
   string chunk_text = 3;
   float relevance_score = 4;
+  int32 page_number = 5;
 }
 
 message IndexRequest {

@@ -68,9 +68,10 @@ class SearchEngineServicer(service_pb2_grpc.SearchEngineServicer):
         top_k = request.top_k or 20
         
         try:
-            print(f"[*] Received EverythingSearch request: query='{query}', top_k={top_k}")
-            # Retrieve watched folders from config to limit Everything search matches to only chosen folders
-            watched_folders = self.config.get("watched_folders", [])
+            print(f"[*] Received EverythingSearch request: query='{query}', top_k={top_k}, filters={request.filters}")
+            # If 'global' is passed in filters, bypass watched folder scoping to query MFT globally
+            is_global = "global" in request.filters
+            watched_folders = [] if is_global else self.config.get("watched_folders", [])
             results = self.everything_engine.search(query, limit=top_k, folder_paths=watched_folders)
             
             proto_results = []
@@ -135,6 +136,54 @@ class SearchEngineServicer(service_pb2_grpc.SearchEngineServicer):
         try:
             print(f"[*] Received IndexTargetFolder request: path='{folder_path}', auto_watch={auto_watch}")
             
+            if folder_path.startswith("LOAD_MODEL:"):
+                target_model = folder_path[len("LOAD_MODEL:"):].strip()
+                print(f"[*] Pre-loading model into memory: {target_model}")
+                success = self.embedder.load_model(target_model)
+                return service_pb2.IndexResponse(
+                    success=success,
+                    files_processed=0,
+                    chunks_created=0,
+                    error_message="" if success else f"Failed to pre-load model {target_model}"
+                )
+
+            if folder_path.startswith("UNLOAD_MODEL:"):
+                target_model = folder_path[len("UNLOAD_MODEL:"):].strip()
+                print(f"[*] Unloading model from memory: {target_model}")
+                success = self.embedder.unload_model(target_model)
+                return service_pb2.IndexResponse(
+                    success=success,
+                    files_processed=0,
+                    chunks_created=0,
+                    error_message="" if success else f"Failed to unload model {target_model}"
+                )
+
+            if folder_path == "DELETE_VECTORS:":
+                print("[*] Delete all vectors request received. Resetting search database...")
+                try:
+                    watched_folders = list(self.config.get("watched_folders", []))
+                    for wf in watched_folders:
+                        try:
+                            self.watcher.unwatch_folder(wf)
+                        except Exception as e:
+                            print(f"[-] Failed to unwatch folder {wf} during reset: {e}")
+                except Exception as e:
+                    print(f"[-] Failed to unwatch folders: {e}")
+                
+                try:
+                    self.config.config["watched_folders"] = []
+                    self.config._save(self.config.config)
+                except Exception as e:
+                    print(f"[-] Failed to clear watched folders in config: {e}")
+
+                self.db.reset_database()
+                
+                return service_pb2.IndexResponse(
+                    success=True,
+                    files_processed=0,
+                    chunks_created=0
+                )
+
             if folder_path.startswith("REMOVE:"):
                 target_folder = folder_path[len("REMOVE:"):].strip()
                 abs_folder = os.path.abspath(target_folder)
@@ -191,7 +240,13 @@ class SearchEngineServicer(service_pb2_grpc.SearchEngineServicer):
             total_files, total_chunks = self.db.get_stats(active_model)
             is_watching = self.watcher.is_running()
             watched_list = self.watcher.get_watched_folders()
-            downloaded_models = [m for m in EmbeddingEngine.MODEL_MAP.keys() if is_model_downloaded(m)]
+            downloaded_models = []
+            for m in EmbeddingEngine.MODEL_MAP.keys():
+                if is_model_downloaded(m):
+                    if self.embedder.is_model_loaded(m):
+                        downloaded_models.append(f"{m}:loaded")
+                    else:
+                        downloaded_models.append(m)
             db_dir = get_db_dir()
             
             return service_pb2.StatusResponse(

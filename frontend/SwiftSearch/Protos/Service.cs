@@ -28,41 +28,41 @@ namespace SwiftSearch.Core.Protos {
             "Eg0KBXF1ZXJ5GAEgASgJEg0KBXRvcF9rGAIgASgFEg8KB2ZpbHRlcnMYAyAD",
             "KAkiVwoOU2VhcmNoUmVzcG9uc2USKgoHcmVzdWx0cxgBIAMoCzIZLnN3aWZ0",
             "c2VhcmNoLlNlYXJjaFJlc3VsdBIZChFleGVjdXRpb25fdGltZV9tcxgCIAEo",
-            "AiJhCgxTZWFyY2hSZXN1bHQSEQoJZmlsZV9wYXRoGAEgASgJEhEKCWZpbGVf",
+            "AiJ2CgxTZWFyY2hSZXN1bHQSEQoJZmlsZV9wYXRoGAEgASgJEhEKCWZpbGVf",
             "bmFtZRgCIAEoCRISCgpjaHVua190ZXh0GAMgASgJEhcKD3JlbGV2YW5jZV9z",
-            "Y29yZRgEIAEoAiI3CgxJbmRleFJlcXVlc3QSEwoLZm9sZGVyX3BhdGgYASAB",
-            "KAkSEgoKYXV0b193YXRjaBgCIAEoCCJoCg1JbmRleFJlc3BvbnNlEg8KB3N1",
-            "Y2Nlc3MYASABKAgSFwoPZmlsZXNfcHJvY2Vzc2VkGAIgASgFEhYKDmNodW5r",
-            "c19jcmVhdGVkGAMgASgFEhUKDWVycm9yX21lc3NhZ2UYBCABKAkiWwoPU2V0",
-            "dGluZ3NSZXF1ZXN0EhQKDGFjdGl2ZV9tb2RlbBgBIAEoCRIVCg1leGNsdWRl",
-            "ZF9kaXJzGAIgAygJEhsKE2luY2x1ZGVkX2V4dGVuc2lvbnMYAyADKAkiOgoQ",
-            "U2V0dGluZ3NSZXNwb25zZRIPCgdzdWNjZXNzGAEgASgIEhUKDWVycm9yX21l",
-            "c3NhZ2UYAiABKAkiBwoFRW1wdHkiuwEKDlN0YXR1c1Jlc3BvbnNlEhsKE3Rv",
-            "dGFsX2luZGV4ZWRfZmlsZXMYASABKAUSFQoNdG90YWxfdmVjdG9ycxgCIAEo",
-            "BRIbChNpc193YXRjaGRvZ19ydW5uaW5nGAMgASgIEhQKDGFjdGl2ZV9tb2Rl",
-            "bBgEIAEoCRIXCg93YXRjaGVkX2ZvbGRlcnMYBSADKAkSGQoRZG93bmxvYWRl",
-            "ZF9tb2RlbHMYBiADKAkSDgoGZGJfZGlyGAcgASgJIioKFERvd25sb2FkTW9k",
-            "ZWxSZXF1ZXN0EhIKCm1vZGVsX25hbWUYASABKAkiZAoVRG93bmxvYWRNb2Rl",
-            "bFJlc3BvbnNlEhIKCm1vZGVsX25hbWUYASABKAkSEAoIcHJvZ3Jlc3MYAiAB",
-            "KAISDgoGc3RhdHVzGAMgASgJEhUKDWVycm9yX21lc3NhZ2UYBCABKAky3wMK",
-            "DFNlYXJjaEVuZ2luZRJJCg5TZW1hbnRpY1NlYXJjaBIaLnN3aWZ0c2VhcmNo",
-            "LlNlYXJjaFJlcXVlc3QaGy5zd2lmdHNlYXJjaC5TZWFyY2hSZXNwb25zZRJL",
-            "ChBFdmVyeXRoaW5nU2VhcmNoEhouc3dpZnRzZWFyY2guU2VhcmNoUmVxdWVz",
-            "dBobLnN3aWZ0c2VhcmNoLlNlYXJjaFJlc3BvbnNlEkoKEUluZGV4VGFyZ2V0",
-            "Rm9sZGVyEhkuc3dpZnRzZWFyY2guSW5kZXhSZXF1ZXN0Ghouc3dpZnRzZWFy",
-            "Y2guSW5kZXhSZXNwb25zZRJCCg9HZXRTeXN0ZW1TdGF0dXMSEi5zd2lmdHNl",
-            "YXJjaC5FbXB0eRobLnN3aWZ0c2VhcmNoLlN0YXR1c1Jlc3BvbnNlEk0KDlVw",
-            "ZGF0ZVNldHRpbmdzEhwuc3dpZnRzZWFyY2guU2V0dGluZ3NSZXF1ZXN0Gh0u",
-            "c3dpZnRzZWFyY2guU2V0dGluZ3NSZXNwb25zZRJYCg1Eb3dubG9hZE1vZGVs",
-            "EiEuc3dpZnRzZWFyY2guRG93bmxvYWRNb2RlbFJlcXVlc3QaIi5zd2lmdHNl",
-            "YXJjaC5Eb3dubG9hZE1vZGVsUmVzcG9uc2UwAUIaqgIXU3dpZnRTZWFyY2gu",
-            "Q29yZS5Qcm90b3NiBnByb3RvMw=="));
+            "Y29yZRgEIAEoAhITCgtwYWdlX251bWJlchgFIAEoBSI3CgxJbmRleFJlcXVl",
+            "c3QSEwoLZm9sZGVyX3BhdGgYASABKAkSEgoKYXV0b193YXRjaBgCIAEoCCJo",
+            "Cg1JbmRleFJlc3BvbnNlEg8KB3N1Y2Nlc3MYASABKAgSFwoPZmlsZXNfcHJv",
+            "Y2Vzc2VkGAIgASgFEhYKDmNodW5rc19jcmVhdGVkGAMgASgFEhUKDWVycm9y",
+            "X21lc3NhZ2UYBCABKAkiWwoPU2V0dGluZ3NSZXF1ZXN0EhQKDGFjdGl2ZV9t",
+            "b2RlbBgBIAEoCRIVCg1leGNsdWRlZF9kaXJzGAIgAygJEhsKE2luY2x1ZGVk",
+            "X2V4dGVuc2lvbnMYAyADKAkiOgoQU2V0dGluZ3NSZXNwb25zZRIPCgdzdWNj",
+            "ZXNzGAEgASgIEhUKDWVycm9yX21lc3NhZ2UYAiABKAkiBwoFRW1wdHkiuwEK",
+            "DlN0YXR1c1Jlc3BvbnNlEhsKE3RvdGFsX2luZGV4ZWRfZmlsZXMYASABKAUS",
+            "FQoNdG90YWxfdmVjdG9ycxgCIAEoBRIbChNpc193YXRjaGRvZ19ydW5uaW5n",
+            "GAMgASgIEhQKDGFjdGl2ZV9tb2RlbBgEIAEoCRIXCg93YXRjaGVkX2ZvbGRl",
+            "cnMYBSADKAkSGQoRZG93bmxvYWRlZF9tb2RlbHMYBiADKAkSDgoGZGJfZGly",
+            "GAcgASgJIioKFERvd25sb2FkTW9kZWxSZXF1ZXN0EhIKCm1vZGVsX25hbWUY",
+            "ASABKAkiZAoVRG93bmxvYWRNb2RlbFJlc3BvbnNlEhIKCm1vZGVsX25hbWUY",
+            "ASABKAkSEAoIcHJvZ3Jlc3MYAiABKAISDgoGc3RhdHVzGAMgASgJEhUKDWVy",
+            "cm9yX21lc3NhZ2UYBCABKAky3wMKDFNlYXJjaEVuZ2luZRJJCg5TZW1hbnRp",
+            "Y1NlYXJjaBIaLnN3aWZ0c2VhcmNoLlNlYXJjaFJlcXVlc3QaGy5zd2lmdHNl",
+            "YXJjaC5TZWFyY2hSZXNwb25zZRJLChBFdmVyeXRoaW5nU2VhcmNoEhouc3dp",
+            "ZnRzZWFyY2guU2VhcmNoUmVxdWVzdBobLnN3aWZ0c2VhcmNoLlNlYXJjaFJl",
+            "c3BvbnNlEkoKEUluZGV4VGFyZ2V0Rm9sZGVyEhkuc3dpZnRzZWFyY2guSW5k",
+            "ZXhSZXF1ZXN0Ghouc3dpZnRzZWFyY2guSW5kZXhSZXNwb25zZRJCCg9HZXRT",
+            "eXN0ZW1TdGF0dXMSEi5zd2lmdHNlYXJjaC5FbXB0eRobLnN3aWZ0c2VhcmNo",
+            "LlN0YXR1c1Jlc3BvbnNlEk0KDlVwZGF0ZVNldHRpbmdzEhwuc3dpZnRzZWFy",
+            "Y2guU2V0dGluZ3NSZXF1ZXN0Gh0uc3dpZnRzZWFyY2guU2V0dGluZ3NSZXNw",
+            "b25zZRJYCg1Eb3dubG9hZE1vZGVsEiEuc3dpZnRzZWFyY2guRG93bmxvYWRN",
+            "b2RlbFJlcXVlc3QaIi5zd2lmdHNlYXJjaC5Eb3dubG9hZE1vZGVsUmVzcG9u",
+            "c2UwAUIaqgIXU3dpZnRTZWFyY2guQ29yZS5Qcm90b3NiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::SwiftSearch.Core.Protos.SearchRequest), global::SwiftSearch.Core.Protos.SearchRequest.Parser, new[]{ "Query", "TopK", "Filters" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::SwiftSearch.Core.Protos.SearchResponse), global::SwiftSearch.Core.Protos.SearchResponse.Parser, new[]{ "Results", "ExecutionTimeMs" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::SwiftSearch.Core.Protos.SearchResult), global::SwiftSearch.Core.Protos.SearchResult.Parser, new[]{ "FilePath", "FileName", "ChunkText", "RelevanceScore" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::SwiftSearch.Core.Protos.SearchResult), global::SwiftSearch.Core.Protos.SearchResult.Parser, new[]{ "FilePath", "FileName", "ChunkText", "RelevanceScore", "PageNumber" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::SwiftSearch.Core.Protos.IndexRequest), global::SwiftSearch.Core.Protos.IndexRequest.Parser, new[]{ "FolderPath", "AutoWatch" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::SwiftSearch.Core.Protos.IndexResponse), global::SwiftSearch.Core.Protos.IndexResponse.Parser, new[]{ "Success", "FilesProcessed", "ChunksCreated", "ErrorMessage" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::SwiftSearch.Core.Protos.SettingsRequest), global::SwiftSearch.Core.Protos.SettingsRequest.Parser, new[]{ "ActiveModel", "ExcludedDirs", "IncludedExtensions" }, null, null, null, null),
@@ -588,6 +588,7 @@ namespace SwiftSearch.Core.Protos {
       fileName_ = other.fileName_;
       chunkText_ = other.chunkText_;
       relevanceScore_ = other.relevanceScore_;
+      pageNumber_ = other.pageNumber_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -645,6 +646,18 @@ namespace SwiftSearch.Core.Protos {
       }
     }
 
+    /// <summary>Field number for the "page_number" field.</summary>
+    public const int PageNumberFieldNumber = 5;
+    private int pageNumber_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int PageNumber {
+      get { return pageNumber_; }
+      set {
+        pageNumber_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -664,6 +677,7 @@ namespace SwiftSearch.Core.Protos {
       if (FileName != other.FileName) return false;
       if (ChunkText != other.ChunkText) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(RelevanceScore, other.RelevanceScore)) return false;
+      if (PageNumber != other.PageNumber) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -675,6 +689,7 @@ namespace SwiftSearch.Core.Protos {
       if (FileName.Length != 0) hash ^= FileName.GetHashCode();
       if (ChunkText.Length != 0) hash ^= ChunkText.GetHashCode();
       if (RelevanceScore != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(RelevanceScore);
+      if (PageNumber != 0) hash ^= PageNumber.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -709,6 +724,10 @@ namespace SwiftSearch.Core.Protos {
         output.WriteRawTag(37);
         output.WriteFloat(RelevanceScore);
       }
+      if (PageNumber != 0) {
+        output.WriteRawTag(40);
+        output.WriteInt32(PageNumber);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -735,6 +754,10 @@ namespace SwiftSearch.Core.Protos {
         output.WriteRawTag(37);
         output.WriteFloat(RelevanceScore);
       }
+      if (PageNumber != 0) {
+        output.WriteRawTag(40);
+        output.WriteInt32(PageNumber);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -756,6 +779,9 @@ namespace SwiftSearch.Core.Protos {
       }
       if (RelevanceScore != 0F) {
         size += 1 + 4;
+      }
+      if (PageNumber != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(PageNumber);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -780,6 +806,9 @@ namespace SwiftSearch.Core.Protos {
       }
       if (other.RelevanceScore != 0F) {
         RelevanceScore = other.RelevanceScore;
+      }
+      if (other.PageNumber != 0) {
+        PageNumber = other.PageNumber;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -812,6 +841,10 @@ namespace SwiftSearch.Core.Protos {
             RelevanceScore = input.ReadFloat();
             break;
           }
+          case 40: {
+            PageNumber = input.ReadInt32();
+            break;
+          }
         }
       }
     #endif
@@ -841,6 +874,10 @@ namespace SwiftSearch.Core.Protos {
           }
           case 37: {
             RelevanceScore = input.ReadFloat();
+            break;
+          }
+          case 40: {
+            PageNumber = input.ReadInt32();
             break;
           }
         }

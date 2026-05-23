@@ -9,28 +9,37 @@
     mc:Ignorable="d"
     Background="Transparent">
 
-    <Grid>
+    <Grid Background="Transparent">
         <NavigationView x:Name="MainNavView"
+                        Background="Transparent"
                         PaneDisplayMode="Left"
                         IsBackButtonVisible="Collapsed"
                         IsSettingsVisible="False"
                         ItemInvoked="MainNavView_ItemInvoked"
-                        Loaded="MainNavView_Loaded"
-                        Header="Search Dashboard">
+                        Loaded="MainNavView_Loaded">
+            
+            <NavigationView.Resources>
+                <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />
+            </NavigationView.Resources>
             
             <NavigationView.MenuItems>
                 <NavigationViewItem x:Name="SearchItem" 
-                                    Content="Search Dashboard" 
+                                    Content="Home" 
                                     Tag="Search" 
                                     Icon="Find" />
+                <NavigationViewItem x:Name="GlobalSearchItem" 
+                                    Content="System search" 
+                                    Tag="GlobalSearch" 
+                                    Icon="World" />
                 <NavigationViewItem x:Name="SettingsItem" 
-                                    Content="Settings Manager" 
+                                    Content="Settings" 
                                     Tag="Settings" 
                                     Icon="Setting" />
                 <NavigationViewItem x:Name="DiagnosticsItem" 
-                                    Content="System Debugger" 
+                                    Content="Developer Logs" 
                                     Tag="Diagnostics" 
-                                    Icon="Repair" />
+                                    Icon="Repair" 
+                                    Visibility="Collapsed" />
             </NavigationView.MenuItems>
 
             <NavigationView.FooterMenuItems>

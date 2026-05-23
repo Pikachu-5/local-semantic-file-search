@@ -61,7 +61,12 @@ class HybridSearchEngine:
             formatted_results = []
             for row in raw_valid_results:
                 file_path = row.get("file_path", "")
-                score = float(row.get("_score", 0.0))
+                score = row.get("_score")
+                if score is None:
+                    score = row.get("_relevance_score")
+                if score is None:
+                    score = 0.0
+                score = float(score)
                 
                 # Absolute mapping of RRF score: 0.0 maps to 50%, rank 1 (~0.033) maps to 99%
                 scaled_score = 0.50 + 15.0 * score

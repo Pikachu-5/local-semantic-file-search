@@ -105,16 +105,92 @@ namespace SwiftSearch.Views
                     NomicModelRadio.IsChecked = true;
                 }
 
-                // Model Downloaded Sync
+                // Model Downloaded & Loaded status sync
                 bool isBgeDownloaded = service.DownloadedModels.Contains("BGE-Small-EN-v1.5");
-                BgeDownloadedText.Visibility = isBgeDownloaded ? Visibility.Visible : Visibility.Collapsed;
-                BgeDownloadButton.Visibility = isBgeDownloaded ? Visibility.Collapsed : Visibility.Visible;
+                bool isBgeLoaded = service.LoadedModels.Contains("BGE-Small-EN-v1.5");
+                
+                if (isBgeLoaded)
+                {
+                    BgeStatusText.Text = "Active (RAM)";
+                    BgeStatusText.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(255, 52, 199, 89));
+                    BgeStatusText.Visibility = Visibility.Visible;
+                    BgeDownloadButton.Visibility = Visibility.Collapsed;
+                    BgeMemoryButton.Content = "Unload";
+                    BgeMemoryButton.Visibility = Visibility.Visible;
+                    BgeMemoryButton.IsEnabled = !service.IsLoadingModel;
+                }
+                else if (isBgeDownloaded)
+                {
+                    BgeStatusText.Text = "Downloaded";
+                    BgeStatusText.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(255, 128, 128, 128));
+                    BgeStatusText.Visibility = Visibility.Visible;
+                    BgeDownloadButton.Visibility = Visibility.Collapsed;
+                    BgeMemoryButton.Content = "Load";
+                    BgeMemoryButton.Visibility = Visibility.Visible;
+                    BgeMemoryButton.IsEnabled = !service.IsLoadingModel;
+                }
+                else
+                {
+                    BgeStatusText.Text = "Not Downloaded";
+                    BgeStatusText.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(255, 128, 128, 128));
+                    BgeStatusText.Visibility = Visibility.Visible;
+                    BgeDownloadButton.Visibility = Visibility.Visible;
+                    BgeMemoryButton.Visibility = Visibility.Collapsed;
+                }
 
                 bool isNomicDownloaded = service.DownloadedModels.Contains("Nomic-Embed-Text-v1.5");
-                NomicDownloadedText.Visibility = isNomicDownloaded ? Visibility.Visible : Visibility.Collapsed;
-                NomicDownloadButton.Visibility = isNomicDownloaded ? Visibility.Collapsed : Visibility.Visible;
+                bool isNomicLoaded = service.LoadedModels.Contains("Nomic-Embed-Text-v1.5");
+                
+                if (isNomicLoaded)
+                {
+                    NomicStatusText.Text = "Active (RAM)";
+                    NomicStatusText.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(255, 52, 199, 89));
+                    NomicStatusText.Visibility = Visibility.Visible;
+                    NomicDownloadButton.Visibility = Visibility.Collapsed;
+                    NomicMemoryButton.Content = "Unload";
+                    NomicMemoryButton.Visibility = Visibility.Visible;
+                    NomicMemoryButton.IsEnabled = !service.IsLoadingModel;
+                }
+                else if (isNomicDownloaded)
+                {
+                    NomicStatusText.Text = "Downloaded";
+                    NomicStatusText.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(255, 128, 128, 128));
+                    NomicStatusText.Visibility = Visibility.Visible;
+                    NomicDownloadButton.Visibility = Visibility.Collapsed;
+                    NomicMemoryButton.Content = "Load";
+                    NomicMemoryButton.Visibility = Visibility.Visible;
+                    NomicMemoryButton.IsEnabled = !service.IsLoadingModel;
+                }
+                else
+                {
+                    NomicStatusText.Text = "Not Downloaded";
+                    NomicStatusText.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(255, 128, 128, 128));
+                    NomicStatusText.Visibility = Visibility.Visible;
+                    NomicDownloadButton.Visibility = Visibility.Visible;
+                    NomicMemoryButton.Visibility = Visibility.Collapsed;
+                }
 
                 DbDirText.Text = string.IsNullOrEmpty(service.DbDir) ? "Not loaded" : service.DbDir;
+
+                // Theme Sync
+                if (App.Current is App app && ThemeComboBox != null)
+                {
+                    var currentTheme = app.GetCurrentTheme();
+                    int selectIndex = 0; // Default
+                    if (currentTheme == ElementTheme.Light) selectIndex = 1;
+                    else if (currentTheme == ElementTheme.Dark) selectIndex = 2;
+
+                    if (ThemeComboBox.SelectedIndex != selectIndex)
+                    {
+                        ThemeComboBox.SelectedIndex = selectIndex;
+                    }
+                }
+
+                // DevLogs Sync
+                if (DevLogsToggle != null)
+                {
+                    DevLogsToggle.IsOn = App.IsDevLogsEnabled;
+                }
 
                 // 3. Watched Folders ListView (Avoid reset if structural content matches)
                 var currentItems = FoldersListView.ItemsSource as List<string>;
@@ -278,6 +354,60 @@ namespace SwiftSearch.Views
             }
         }
 
+        private async void BgeMemoryButton_Click(object sender, RoutedEventArgs e)
+        {
+            var service = App.SearchService;
+            bool isBgeLoaded = service.LoadedModels.Contains("BGE-Small-EN-v1.5");
+            BgeMemoryButton.IsEnabled = false;
+            try
+            {
+                if (isBgeLoaded)
+                {
+                    await service.UnloadModelFromMemoryAsync("BGE-Small-EN-v1.5");
+                }
+                else
+                {
+                    await service.LoadModelIntoMemoryAsync("BGE-Small-EN-v1.5");
+                }
+                await service.RefreshStatusAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[SettingsView] BgeMemoryButton_Click failed: {ex.Message}");
+            }
+            finally
+            {
+                BgeMemoryButton.IsEnabled = true;
+            }
+        }
+
+        private async void NomicMemoryButton_Click(object sender, RoutedEventArgs e)
+        {
+            var service = App.SearchService;
+            bool isNomicLoaded = service.LoadedModels.Contains("Nomic-Embed-Text-v1.5");
+            NomicMemoryButton.IsEnabled = false;
+            try
+            {
+                if (isNomicLoaded)
+                {
+                    await service.UnloadModelFromMemoryAsync("Nomic-Embed-Text-v1.5");
+                }
+                else
+                {
+                    await service.LoadModelIntoMemoryAsync("Nomic-Embed-Text-v1.5");
+                }
+                await service.RefreshStatusAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[SettingsView] NomicMemoryButton_Click failed: {ex.Message}");
+            }
+            finally
+            {
+                NomicMemoryButton.IsEnabled = true;
+            }
+        }
+
         private void OpenDbDirButton_Click(object sender, RoutedEventArgs e)
         {
             string dbDir = App.SearchService.DbDir;
@@ -295,6 +425,83 @@ namespace SwiftSearch.Views
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"[SettingsView] Failed to open folder: {ex.Message}");
+                }
+            }
+        }
+
+        private void ThemeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_isSyncing) return;
+            if (ThemeComboBox == null) return;
+
+            if (ThemeComboBox.SelectedItem is ComboBoxItem selectedItem && selectedItem.Tag is string tag)
+            {
+                if (Enum.TryParse(tag, out ElementTheme theme))
+                {
+                    if (App.Current is App app)
+                    {
+                        app.ApplyTheme(theme);
+                    }
+                }
+            }
+        }
+
+        private void DevLogsToggle_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (_isSyncing) return;
+            if (DevLogsToggle == null) return;
+            App.IsDevLogsEnabled = DevLogsToggle.IsOn;
+        }
+
+        private async void DeleteVectorsButton_Click(object sender, RoutedEventArgs e)
+        {
+            ContentDialog confirmDialog = new ContentDialog
+            {
+                Title = "Delete Indexed Vectors?",
+                Content = "This will completely erase all local vector databases and reset all watched folder configurations. This action is permanent.",
+                PrimaryButtonText = "Delete",
+                CloseButtonText = "Cancel",
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = this.XamlRoot
+            };
+
+            var result = await confirmDialog.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            {
+                DeleteVectorsButton.IsEnabled = false;
+                try
+                {
+                    bool success = await App.SearchService.DeleteAllVectorsAsync();
+                    if (success)
+                    {
+                        ContentDialog successDialog = new ContentDialog
+                        {
+                            Title = "Database Reset Complete",
+                            Content = "All vectors have been successfully deleted, and watched folders have been cleared.",
+                            CloseButtonText = "OK",
+                            XamlRoot = this.XamlRoot
+                        };
+                        await successDialog.ShowAsync();
+                    }
+                    else
+                    {
+                        ContentDialog errorDialog = new ContentDialog
+                        {
+                            Title = "Reset Failed",
+                            Content = "An error occurred while resetting the vector database. Please see the diagnostic logs.",
+                            CloseButtonText = "OK",
+                            XamlRoot = this.XamlRoot
+                        };
+                        await errorDialog.ShowAsync();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"[SettingsView] DeleteVectorsButton_Click failed: {ex.Message}");
+                }
+                finally
+                {
+                    DeleteVectorsButton.IsEnabled = true;
                 }
             }
         }

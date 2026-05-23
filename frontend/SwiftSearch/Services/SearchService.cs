@@ -26,6 +26,7 @@ namespace SwiftSearch.Services
 
         private bool _isDaemonOnline;
         private bool _isDownloadingModel;
+        private bool _isLoadingModel;
         private int _totalFiles;
         private int _totalVectors;
         private string _activeModel = "BGE-Small-EN-v1.5";
@@ -33,6 +34,7 @@ namespace SwiftSearch.Services
         private List<string> _excludedDirs = new();
         private List<string> _includedExtensions = new();
         private List<string> _downloadedModels = new();
+        private List<string> _loadedModels = new();
         private string _dbDir = string.Empty;
 
         // Diagnostics fields
@@ -44,74 +46,86 @@ namespace SwiftSearch.Services
         public bool IsDaemonOnline
         {
             get => _isDaemonOnline;
-            private set { _isDaemonOnline = value; OnPropertyChanged(); }
+            private set { if (_isDaemonOnline == value) return; _isDaemonOnline = value; OnPropertyChanged(); }
         }
 
         public bool IsDownloadingModel
         {
             get => _isDownloadingModel;
-            private set { _isDownloadingModel = value; OnPropertyChanged(); }
+            private set { if (_isDownloadingModel == value) return; _isDownloadingModel = value; OnPropertyChanged(); }
         }
 
         public int TotalFiles
         {
             get => _totalFiles;
-            private set { _totalFiles = value; OnPropertyChanged(); }
+            private set { if (_totalFiles == value) return; _totalFiles = value; OnPropertyChanged(); }
         }
 
         public int TotalVectors
         {
             get => _totalVectors;
-            private set { _totalVectors = value; OnPropertyChanged(); }
+            private set { if (_totalVectors == value) return; _totalVectors = value; OnPropertyChanged(); }
         }
 
         public string ActiveModel
         {
             get => _activeModel;
-            private set { _activeModel = value; OnPropertyChanged(); }
+            private set { if (_activeModel == value) return; _activeModel = value; OnPropertyChanged(); }
         }
 
         public List<string> WatchedFolders
         {
             get => _watchedFolders;
-            private set { _watchedFolders = value; OnPropertyChanged(); }
+            private set { if (_watchedFolders == value) return; _watchedFolders = value; OnPropertyChanged(); }
         }
 
         public List<string> ExcludedDirs
         {
             get => _excludedDirs;
-            private set { _excludedDirs = value; OnPropertyChanged(); }
+            private set { if (_excludedDirs == value) return; _excludedDirs = value; OnPropertyChanged(); }
         }
 
         public List<string> IncludedExtensions
         {
             get => _includedExtensions;
-            private set { _includedExtensions = value; OnPropertyChanged(); }
+            private set { if (_includedExtensions == value) return; _includedExtensions = value; OnPropertyChanged(); }
         }
 
         public List<string> DownloadedModels
         {
             get => _downloadedModels;
-            private set { _downloadedModels = value; OnPropertyChanged(); }
+            private set { if (_downloadedModels == value) return; _downloadedModels = value; OnPropertyChanged(); }
+        }
+
+        public bool IsLoadingModel
+        {
+            get => _isLoadingModel;
+            private set { if (_isLoadingModel == value) return; _isLoadingModel = value; OnPropertyChanged(); }
+        }
+
+        public List<string> LoadedModels
+        {
+            get => _loadedModels;
+            private set { if (_loadedModels == value) return; _loadedModels = value; OnPropertyChanged(); }
         }
 
         public string DbDir
         {
             get => _dbDir;
-            private set { _dbDir = value; OnPropertyChanged(); }
+            private set { if (_dbDir == value) return; _dbDir = value; OnPropertyChanged(); }
         }
 
         // Diagnostics properties
         public int DaemonPort
         {
             get => _daemonPort;
-            private set { _daemonPort = value; OnPropertyChanged(); }
+            private set { if (_daemonPort == value) return; _daemonPort = value; OnPropertyChanged(); }
         }
 
         public int DaemonPid
         {
             get => _daemonPid;
-            private set { _daemonPid = value; OnPropertyChanged(); }
+            private set { if (_daemonPid == value) return; _daemonPid = value; OnPropertyChanged(); }
         }
 
         public long DaemonMemoryBytes
@@ -175,6 +189,50 @@ namespace SwiftSearch.Services
             finally
             {
                 IsDownloadingModel = false;
+                await RefreshStatusAsync();
+            }
+        }
+
+        public async Task<bool> LoadModelIntoMemoryAsync(string modelName)
+        {
+            if (_client == null || !IsDaemonOnline) return false;
+
+            IsLoadingModel = true;
+            try
+            {
+                var request = new IndexRequest { FolderPath = $"LOAD_MODEL:{modelName}", AutoWatch = false };
+                var response = await _client.IndexTargetFolderAsync(request);
+                return response.Success;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[SearchService] LoadModelIntoMemoryAsync failed: {ex.Message}");
+                return false;
+            }
+            finally
+            {
+                IsLoadingModel = false;
+                await RefreshStatusAsync();
+            }
+        }
+
+        public async Task<bool> UnloadModelFromMemoryAsync(string modelName)
+        {
+            if (_client == null || !IsDaemonOnline) return false;
+
+            try
+            {
+                var request = new IndexRequest { FolderPath = $"UNLOAD_MODEL:{modelName}", AutoWatch = false };
+                var response = await _client.IndexTargetFolderAsync(request);
+                return response.Success;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[SearchService] UnloadModelFromMemoryAsync failed: {ex.Message}");
+                return false;
+            }
+            finally
+            {
                 await RefreshStatusAsync();
             }
         }
@@ -467,6 +525,37 @@ namespace SwiftSearch.Services
             }
         }
 
+        public async Task<List<SearchItem>> SearchEverythingGlobalAsync(string query, int topK)
+        {
+            if (_client == null || !IsDaemonOnline) return new List<SearchItem>();
+
+            try
+            {
+                var request = new SearchRequest { Query = query, TopK = topK };
+                request.Filters.Add("global");
+                var response = await _client.EverythingSearchAsync(request);
+                
+                var results = new List<SearchItem>();
+                foreach (var r in response.Results)
+                {
+                    results.Add(new SearchItem
+                    {
+                        FilePath = r.FilePath,
+                        FileName = r.FileName,
+                        ChunkText = r.ChunkText,
+                        RelevanceScore = r.RelevanceScore,
+                        Query = query
+                    });
+                }
+                return results;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[SearchService] SearchEverythingGlobalAsync failed: {ex.Message}");
+                return new List<SearchItem>();
+            }
+        }
+
         public async Task<bool> IndexFolderAsync(string folderPath)
         {
             if (_client == null || !IsDaemonOnline) return false;
@@ -539,10 +628,31 @@ namespace SwiftSearch.Services
                     WatchedFolders = watched;
                 }
 
-                var downloaded = new List<string>(response.DownloadedModels);
+                var rawDownloaded = response.DownloadedModels;
+                var downloaded = new List<string>();
+                var loaded = new List<string>();
+                foreach (var m in rawDownloaded)
+                {
+                    if (m.EndsWith(":loaded"))
+                    {
+                        var name = m.Substring(0, m.Length - ":loaded".Length);
+                        downloaded.Add(name);
+                        loaded.Add(name);
+                    }
+                    else
+                    {
+                        downloaded.Add(m);
+                    }
+                }
+                
                 if (!AreListsEqual(_downloadedModels, downloaded))
                 {
                     DownloadedModels = downloaded;
+                }
+
+                if (!AreListsEqual(_loadedModels, loaded))
+                {
+                    LoadedModels = loaded;
                 }
 
                 if (_dbDir != response.DbDir)
@@ -574,6 +684,28 @@ namespace SwiftSearch.Services
             }
         }
 
+        public async Task<bool> DeleteAllVectorsAsync()
+        {
+            if (_client == null || !IsDaemonOnline) return false;
+
+            try
+            {
+                var request = new IndexRequest { FolderPath = "DELETE_VECTORS:", AutoWatch = false };
+                var response = await _client.IndexTargetFolderAsync(request);
+                if (response.Success)
+                {
+                    await RefreshStatusAsync();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[SearchService] DeleteAllVectorsAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
         private void ReadDaemonOutput(Process process)
         {
             try
@@ -584,11 +716,11 @@ namespace SwiftSearch.Services
                     Log($"[Daemon stdout] {line}");
                     if (line.Contains("[*] Loading model"))
                     {
-                        _syncContext?.Post(_ => IsDownloadingModel = true, null);
+                        _syncContext?.Post(_ => IsLoadingModel = true, null);
                     }
                     else if (line.Contains("loaded successfully!"))
                     {
-                        _syncContext?.Post(_ => IsDownloadingModel = false, null);
+                        _syncContext?.Post(_ => IsLoadingModel = false, null);
                     }
                 }
             }

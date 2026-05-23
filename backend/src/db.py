@@ -27,6 +27,33 @@ class VectorDatabase:
         self.db_dir = db_dir or get_db_dir()
         self.db = lancedb.connect(self.db_dir)
         
+    def reset_database(self) -> None:
+        """
+        Drops all tables in the LanceDB database to delete all indexed vectors.
+        """
+        print("[*] Resetting vector database. Dropping all tables...")
+        try:
+            tables = self.db.list_tables()
+            if hasattr(tables, "tables"):
+                table_names = tables.tables
+            else:
+                table_names = list(tables)
+            
+            for t in table_names:
+                try:
+                    self.db.drop_table(t)
+                    print(f"[+] Dropped table: {t}")
+                except Exception as e:
+                    print(f"[-] Failed to drop table {t}: {e}")
+        except Exception as e:
+            print(f"[-] Error listing/dropping tables: {e}")
+            for t in ["chunks_bge_384", "chunks_nomic_768"]:
+                try:
+                    self.db.drop_table(t)
+                    print(f"[+] Dropped table (fallback): {t}")
+                except Exception:
+                    pass
+
     def _get_table_name(self, model_name: str) -> str:
         """
         Returns the table name based on the active model.
@@ -128,8 +155,8 @@ class VectorDatabase:
             
         table = self.get_table(model_name)
         try:
-            # We can query all records as standard Arrow format and convert to dictionaries
-            records = table.to_arrow().to_pylist()
+            # Select only "file_path" and "last_modified" to avoid loading heavy vectors and text
+            records = table.search().select(["file_path", "last_modified"]).to_arrow().to_pylist()
             if not records:
                 return {}
             # Group by file_path and take the maximum modification time in pure Python
@@ -154,11 +181,25 @@ class VectorDatabase:
             
         table = self.get_table(model_name)
         try:
-            records = table.to_arrow().to_pylist()
-            if not records:
+            total_vectors = len(table)
+            if total_vectors == 0:
                 return 0, 0
-            unique_files = {r.get("file_path") for r in records if r.get("file_path")}
-            return len(unique_files), len(records)
+                
+            # Select only "file_path" to avoid loading heavy vectors and text
+            arrow_table = table.search().select(["file_path"]).to_arrow()
+            if len(arrow_table) == 0:
+                return 0, 0
+                
+            # Perform uniqueness check entirely in Arrow/C++ to minimize RAM allocations
+            file_paths = arrow_table.column("file_path")
+            unique_paths = file_paths.unique()
+            num_unique = len(unique_paths)
+            
+            # Account for any potential null values in the unique array
+            if unique_paths.null_count > 0:
+                num_unique -= unique_paths.null_count
+                
+            return num_unique, total_vectors
         except Exception as e:
             print(f"[-] Error getting stats: {e}")
             return 0, 0

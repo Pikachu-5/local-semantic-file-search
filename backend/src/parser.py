@@ -149,7 +149,7 @@ class FileParser:
                 
         doc.close()
         
-        combined_text = "\n\n--- Page Break ---\n\n".join(full_text)
+        combined_text = "\n\n".join(full_text)
         return self.splitter.split_text(combined_text)
 
     def _parse_text(self, file_path: str) -> List[str]:

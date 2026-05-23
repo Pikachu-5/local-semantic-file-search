@@ -72,6 +72,16 @@ class EverythingSearchEngine:
             self.dll.Everything_GetLastError.argtypes = []
             self.dll.Everything_GetLastError.restype = wintypes.DWORD
 
+            # 8. Define Everything_Reset
+            # void Everything_Reset(void)
+            self.dll.Everything_Reset.argtypes = []
+            self.dll.Everything_Reset.restype = None
+
+            # 9. Define Everything_SetMax
+            # void Everything_SetMax(DWORD dwMaxResults)
+            self.dll.Everything_SetMax.argtypes = [wintypes.DWORD]
+            self.dll.Everything_SetMax.restype = None
+
             self._initialized = True
             print(f"[+] Loaded Everything SDK DLL: {dll_name}")
         except Exception as e:
@@ -101,7 +111,7 @@ class EverythingSearchEngine:
             return []
 
         if not query.strip():
-            return []
+            query = ""
 
         # If allowed folder paths are specified, construct a parent directory filter query
         if folder_paths:
@@ -118,6 +128,9 @@ class EverythingSearchEngine:
             # Configure requests to fetch both path and filename
             self.dll.Everything_SetRequestFlags(EVERYTHING_REQUEST_FULL_PATH_AND_FILE_NAME)
             
+            # Limit the number of results allocated inside Everything DLL to prevent memory spikes
+            self.dll.Everything_SetMax(limit)
+
             # Run the blocking query
             if not self.dll.Everything_QueryW(True):
                 err = self.dll.Everything_GetLastError()
@@ -147,3 +160,9 @@ class EverythingSearchEngine:
         except Exception as e:
             print(f"[-] Error querying Everything SDK: {e}")
             return []
+        finally:
+            if self._initialized and self.dll:
+                try:
+                    self.dll.Everything_Reset()
+                except Exception:
+                    pass

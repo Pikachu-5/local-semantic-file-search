@@ -107,6 +107,43 @@ class EmbeddingEngine:
                 
             return _models_cache[model_display_name]
 
+    def load_model(self, model_name: str) -> bool:
+        """
+        Manually loads a model into memory.
+        """
+        try:
+            self._load_model(model_name)
+            return True
+        except Exception as e:
+            print(f"[-] Failed to pre-load model {model_name}: {e}")
+            return False
+
+    def unload_model(self, model_name: str) -> bool:
+        """
+        Unloads a model from memory and releases GPU/system RAM.
+        """
+        with _cache_lock:
+            if model_name in _models_cache:
+                print(f"[*] Unloading model '{model_name}' from memory...")
+                del _models_cache[model_name]
+                gc.collect()
+                try:
+                    import torch
+                    if torch.cuda.is_available():
+                        torch.cuda.empty_cache()
+                except Exception:
+                    pass
+                print(f"[+] Model '{model_name}' unloaded successfully!")
+                return True
+            return False
+
+    def is_model_loaded(self, model_name: str) -> bool:
+        """
+        Checks if a model is currently loaded in active RAM/GPU memory.
+        """
+        with _cache_lock:
+            return model_name in _models_cache
+
     def embed(self, texts: Union[str, List[str]], model_name: str = "BGE-Small-EN-v1.5") -> np.ndarray:
         """
         Generates dense embeddings for the provided text or list of texts.

@@ -10,6 +10,7 @@ namespace SwiftSearch.Services
     {
         bool IsDaemonOnline { get; }
         bool IsDownloadingModel { get; }
+        bool IsLoadingModel { get; }
         int TotalFiles { get; }
         int TotalVectors { get; }
         string ActiveModel { get; }
@@ -17,6 +18,7 @@ namespace SwiftSearch.Services
         List<string> ExcludedDirs { get; }
         List<string> IncludedExtensions { get; }
         List<string> DownloadedModels { get; }
+        List<string> LoadedModels { get; }
         string DbDir { get; }
         
         // Diagnostic properties
@@ -29,12 +31,16 @@ namespace SwiftSearch.Services
         event Action<string>? LogReceived;
         event Action<string, float, string>? ModelDownloadProgressChanged;
         Task DownloadModelAsync(string modelName);
+        Task<bool> LoadModelIntoMemoryAsync(string modelName);
+        Task<bool> UnloadModelFromMemoryAsync(string modelName);
         void StartDaemon();
         void StopDaemon();
         Task<List<SearchItem>> SearchAsync(string query, int topK);
         Task<List<SearchItem>> SearchEverythingAsync(string query, int topK);
+        Task<List<SearchItem>> SearchEverythingGlobalAsync(string query, int topK);
         Task<bool> IndexFolderAsync(string folderPath);
         Task<bool> RemoveFolderAsync(string folderPath);
+        Task<bool> DeleteAllVectorsAsync();
         Task<bool> UpdateSettingsAsync(string activeModel, List<string> excludedDirs, List<string> includedExtensions);
         Task RefreshStatusAsync();
         Task<long> PingDaemonAsync();

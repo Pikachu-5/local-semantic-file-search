@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="SwiftSearch.Views.GlobalSearchView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="using:SwiftSearch.Views"
+    mc:Ignorable="d"
+    Background="Transparent">
+    
+    <Page.Resources>
+        <ThemeShadow x:Name="SharedShadow" />
+    </Page.Resources>
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Page Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,16">
+            <TextBlock Text="System Search" 
+                       Style="{ThemeResource SubtitleTextBlockStyle}" 
+                       FontWeight="SemiBold" />
+        </StackPanel>
+
+        <!-- Search Bar Row -->
+        <Grid Grid.Row="1" Margin="0,0,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Spotlight style instant search bar -->
+            <TextBox x:Name="SearchTextBox" 
+                     Grid.Column="0" 
+                     PlaceholderText="Search instantly across all files... (e.g., '.pdf' or 'system32')" 
+                     Height="54" 
+                     FontSize="16"
+                     VerticalContentAlignment="Center"
+                     CornerRadius="8"
+                     Padding="48,14,16,14"
+                     Shadow="{StaticResource SharedShadow}"
+                     Translation="0,0,8"
+                     TextChanged="SearchTextBox_TextChanged">
+                <TextBox.Resources>
+                    <SolidColorBrush x:Key="TextControlBorderBrushFocused" Color="#FF34C759" />
+                </TextBox.Resources>
+            </TextBox>
+            
+            <!-- Injected Magnifying Glass Icon -->
+            <FontIcon Glyph="&#xE721;" 
+                      Grid.Column="0"
+                      FontFamily="Segoe MDL2 Assets" 
+                      FontSize="18" 
+                      Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Center"
+                      Margin="16,0,0,0"
+                      IsHitTestVisible="False" />
+
+            <!-- Active searching indicator -->
+            <ProgressRing x:Name="SearchProgressRing" 
+                          Grid.Column="1"
+                          IsActive="False" 
+                          Width="20" Height="20" 
+                          Margin="16,0,0,0" 
+                          VerticalAlignment="Center" />
+        </Grid>
+
+        <!-- Main Workspace (Virtualized List / Overlays) -->
+        <Grid Grid.Row="2">
+            
+            <!-- Virtualized results list for rapid scrolling -->
+            <ListView x:Name="ResultsListView" 
+                      SelectionMode="None" 
+                      IsItemClickEnabled="True"
+                      ItemClick="ResultsListView_ItemClick"
+                      Visibility="Collapsed"
+                      Padding="0,0,16,12">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <ItemsStackPanel />
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="Margin" Value="0,0,0,8" />
+                        <Setter Property="Padding" Value="0" />
+                        <Setter Property="CornerRadius" Value="8" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <!-- Gorgeous Result Card with Context Menu -->
+                        <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Padding="20,16,20,16"
+                                ToolTipService.ToolTip="Right-click for options">
+                            
+                            <!-- Context Menu Flyout for premium actions -->
+                            <Border.ContextFlyout>
+                                <MenuFlyout>
+                                    <MenuFlyoutItem Text="Open File" Click="OpenFile_ContextClick" Icon="OutlineStar" />
+                                    <MenuFlyoutItem Text="Open Containing Folder" Click="OpenFolder_ContextClick" Icon="Folder" />
+                                </MenuFlyout>
+                            </Border.ContextFlyout>
+                            
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                
+                                <FontIcon Glyph="{Binding FileIcon}" 
+                                          FontFamily="Segoe MDL2 Assets" 
+                                          FontSize="22" 
+                                          Foreground="{Binding FileIconColor}" 
+                                          VerticalAlignment="Center" 
+                                          Margin="0,0,14,0" />
+                                
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="4">
+                                    <TextBlock Text="{Binding FileName}" FontWeight="SemiBold" FontSize="14" />
+                                    <TextBlock Text="{Binding FilePath}" FontSize="11" Foreground="#B0B0B0" TextTrimming="CharacterEllipsis" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <!-- Premium Glassmorphic Everything SDK Offline Banner -->
+            <Border x:Name="OfflinePanel" 
+                    Visibility="Collapsed" 
+                    Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" 
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1" 
+                    CornerRadius="12" 
+                    HorizontalAlignment="Stretch" 
+                    VerticalAlignment="Center" 
+                    MaxWidth="520"
+                    Padding="24"
+                    Margin="0,40,0,0">
+                <StackPanel Spacing="16" HorizontalAlignment="Center">
+                    <Grid Width="56" Height="56" HorizontalAlignment="Center">
+                        <Ellipse Fill="#FF3B30" Opacity="0.15" Width="56" Height="56" />
+                        <FontIcon Glyph="&#xE7BA;" 
+                                  FontFamily="Segoe MDL2 Assets" 
+                                  FontSize="28" 
+                                  Foreground="#FF9500" 
+                                  HorizontalAlignment="Center" 
+                                  VerticalAlignment="Center" />
+                    </Grid>
+                    <TextBlock Text="Everything Service Offline" 
+                               FontSize="18" 
+                               FontWeight="SemiBold" 
+                               HorizontalAlignment="Center" />
+                    <TextBlock Text="To search all files globally, Voidtools Everything app must be running in the background. Please launch Everything and try again." 
+                               FontSize="13" 
+                               Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" 
+                               TextAlignment="Center" 
+                               TextWrapping="Wrap" />
+                    <Button Content="Launch Everything app" 
+                            HorizontalAlignment="Center" 
+                            Style="{ThemeResource AccentButtonStyle}" 
+                            Click="LaunchEverything_Click"
+                            CornerRadius="6"
+                            Padding="16,8,16,8"/>
+                </StackPanel>
+            </Border>
+
+            <!-- No Results Panel -->
+            <StackPanel x:Name="NoResultsPanel" 
+                        Visibility="Collapsed" 
+                        HorizontalAlignment="Center" 
+                        VerticalAlignment="Center" 
+                        Spacing="12"
+                        Margin="0,60,0,0">
+                <FontIcon Glyph="&#xE721;" 
+                          FontFamily="Segoe MDL2 Assets" 
+                          FontSize="48" 
+                          Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" />
+                <TextBlock Text="No matching files found" 
+                           Style="{ThemeResource SubtitleTextBlockStyle}" 
+                           HorizontalAlignment="Center" />
+                <TextBlock Text="Double check your query or check system index status." 
+                           FontSize="13" 
+                           Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" 
+                           HorizontalAlignment="Center" />
+            </StackPanel>
+
+            <!-- Connecting Loading Overlay -->
+            <StackPanel x:Name="ConnectingPanel" 
+                        Visibility="Collapsed" 
+                        HorizontalAlignment="Center" 
+                        VerticalAlignment="Center" 
+                        Spacing="16">
+                <ProgressRing IsActive="True" Width="36" Height="36" />
+                <TextBlock Text="Querying NTFS MFT Index..." 
+                           FontSize="14" 
+                           Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Page>
