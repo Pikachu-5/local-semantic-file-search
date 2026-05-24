@@ -223,7 +223,7 @@
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock x:Name="DbDirText" Text="C:\Users\ayub-\AppData\Local\SwiftSearch\db" 
+                                    <TextBlock x:Name="DbDirText" Text="%LocalAppData%\SwiftSearch\db" 
                                                FontSize="11" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" 
                                                TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,12,0" />
                                     <Button x:Name="OpenDbDirButton" Content="Open Folder" Click="OpenDbDirButton_Click" 
